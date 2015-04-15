@@ -55,9 +55,6 @@ void MainWindow::on_actionHigh_Scores_triggered()
 {
     if(hScore==NULL){
         hScore = new HighScores();
-    }else{
-        delete hScore;
-        hScore = new HighScores();
     }
     hScore->show();
 }//Opens an instance of the High Score window
@@ -66,9 +63,6 @@ void MainWindow::on_Easy_1P_triggered()
 {
     if(scg == NULL)
     {
-        scg = new SuperCopGame();
-    }else{
-        delete scg;
         scg = new SuperCopGame();
     }
     scg->show();

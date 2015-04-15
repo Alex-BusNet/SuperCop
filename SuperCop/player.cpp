@@ -5,33 +5,32 @@
 #include <QKeyEvent>
 #include <QTimer>
 
+
 Player::Player(QWidget *parent)
 {
-    posX = 10;
+    posX = parent->width() / 3;
     posY = parent->height() - 220;
     sizeX = 50;
     sizeY = 86;
-    image = new QPixmap("../SuperCop/Images/player.png");
-    animationTimer = new QTimer();
-    animationTimer->setInterval(17);
+    image = new QPixmap("../SuperCop/Images/Running/Run0_1.png");
     frame = 0;
-    animationTimer->start();
     lastActionPressed = 0;
 
 //    playerScreenPos(parent);
 }
 
+
 Player::~Player()
 {
     delete image;
-    animationTimer->stop();
-    delete animationTimer;
 }
+
 
 void Player::drawPlayer(QPainter &painter)
 {
     painter.drawPixmap(posX, posY, sizeX, sizeY, *image);
 }
+
 
 void Player::changeImage(QString str)
 {
@@ -39,119 +38,125 @@ void Player::changeImage(QString str)
     image = new QPixmap(str);
 }
 
+
 void Player::playerScreenPos(QWidget *w)
 {
 
 }
 
-int Player::playerAction(int action)
+
+void Player::playerAction(int action)
 {
     //If the new direction does not match the previous direction, reset the frame counter to zero.
     if(action != lastActionPressed)
     {
-        qDebug() << "Last action: " << lastActionPressed;
-        qDebug() << "New aciton: " << action;
         frame = 0;
         lastActionPressed = action;
     }
+
 
     //Checks which direction is being called then runs the appropriate function
     switch (action)
     {
     case RIGHT:
-        /*return*/ run();
-        return 0;
+        run();
         break;
     case UP:
-        return jump();
+        jump();
         break;
     case DOWN:
-        return roll();
+        roll();
         break;
     case LEFT:
-        /*return */runInverted();
-        return 0;
+        runInverted();
         break;
     case NONE:
         standBy();
         break;
     }
-
-    lastActionPressed = action;
 }
 
-int Player::jump()
+
+void Player::jump()
 {
-    return 0;
+    frame = 0;
+    changeImage("../SuperCop/Images/Running/Run0_1.png");
     //IGNORE THIS FUNCTION FOR NOW
 }
 
-int Player::roll()
+
+void Player::roll()
 {
-        frame++;
-        QString imagePath = QString("../SuperCop/Images/Rolling/Roll%1.png").arg(QString::number(frame));
+    frame++;
 
+    if(0 < frame && 9 > frame)
+    {
         //Resizes the player to half size
-        sizeX = 25;
-        sizeY = 40;
 
-        if(9 > frame)
-        {
-            changeImage(imagePath);
-//            return 3;
-        }
-        else
-        {
-            //After one loop, return the player to normal size and continue running to the right.
-            sizeX = 50;
-            sizeY = 81;
-            frame = 0;
-
-            return 0;
-        }
+        QString imagePath = QString("../SuperCop/Images/Rolling/Roll%1.png").arg(QString::number(frame));
+        changeImage(imagePath);
+        frame++;
+    }
+    else
+    {
+        //After one loop, return the player to normal size and continue running to the right.
+        sizeX = 50;
+        sizeY = 86;
+        frame = 0;
+        changeImage("../SuperCop/Images/Running/Run0_1.png");
+        lastActionPressed = 0;
+    }
 }
 
-int Player::run()
+
+void Player::run()
 {
     frame++;
     QString imagePath = QString("../SuperCop/Images/Running/Run0_%1.png").arg(frame);
 
-    if(4 > frame)
+    if(0 < frame && 4 > frame)
     {
         changeImage(imagePath);
-//        return 1;
     }
     else
     {
         frame = 0;
-        return 0;
+        changeImage("../SuperCop/Images/Running/Run0_1.png");
     }
 }
 
-int Player::runInverted()
+
+void Player::runInverted()
 {
     frame++;
+
     QString imagePath = QString("../SuperCop/Images/Running/Run1_%1.png").arg(frame);
 
-    if(4 > frame)
+    if(0 < frame && 4 > frame)
     {
         changeImage(imagePath);
-//        return 0;
     }
     else
     {
         frame = 0;
-        return 0;
+        changeImage("../SuperCop/Images/Running/Run1_1.png");
     }
 }
+
 
 void Player::standBy()
 {
-    if(lastActionPressed == 1)
+    if(1 == lastActionPressed)
         changeImage("../SuperCop/Images/Running/Run0_1.png");
 
-    if(lastActionPressed == 4)
+    if(4 == lastActionPressed)
         changeImage("../SuperCop/Images/Running/Run1_1.png");
+}
+
+
+int Player::getFrame()
+{
+    return frame;
 }
 
 void Player::setPosX(int x)

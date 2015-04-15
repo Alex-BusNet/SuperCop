@@ -13,6 +13,7 @@ class Player : public QObject
 
 private:
     enum keyPressed {NONE = 0, RIGHT = 1, UP = 2, DOWN = 3, LEFT = 4};
+    enum keyPress2 {W = UP, A = LEFT, S = DOWN, D = RIGHT};
 
     int posX;
     int posY;
@@ -21,7 +22,6 @@ private:
     int frame;
     int lastActionPressed;
     QPixmap *image;
-    QTimer *animationTimer;
 
 public:
 
@@ -32,10 +32,10 @@ public:
     void changeImage(QString str);
     void playerScreenPos(QWidget *w);
 
-    int jump();
-    int roll();
-    int run();
-    int runInverted();
+    void jump();
+    void roll();
+    void run();
+    void runInverted();
     void standBy();
 
     void setPosX(int x);
@@ -47,9 +47,10 @@ public:
     int getPosY();
     int getSizeX();
     int getSizeY();
+    int getFrame();
 
 public slots:
-    int playerAction(int action);
+    void playerAction(int action);
 };
 
 #endif // Player_H
