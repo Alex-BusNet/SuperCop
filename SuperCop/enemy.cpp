@@ -6,16 +6,15 @@
 Enemy::Enemy(QWidget *parent)
 {
 
-    posX = 620;
+    posX = 820;
     posY = parent->height() - 220;
     sizeX = 85;
     sizeY = 85;
     robot = new QPixmap("../SuperCop/Images/robot.png");
     moveTimer = new QTimer();
     moveTimer->setInterval(10);
-//    frame = 0;
     moveTimer->start();
-    speed=5;
+    speed=0;//7 is an arbitrary standard speed for "moving" objects for now.
 }
 
 Enemy::~Enemy()
@@ -23,7 +22,7 @@ Enemy::~Enemy()
     delete robot;
     moveTimer->stop();
     delete moveTimer;
-}//Destructor
+}//clears potential memory leaks
 
 void Enemy::drawEnemy(QPainter &painter)
 {

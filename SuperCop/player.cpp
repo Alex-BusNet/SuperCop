@@ -1,4 +1,3 @@
-#include "Player.h"
 #include "player.h"
 #include "supercopgame.h"
 #include <QDebug>
@@ -10,11 +9,15 @@ Player::Player(QWidget *parent)
 {
     posX = parent->width() / 3;
     posY = parent->height() - 220;
+    leftbound = 0;
+    rightbound=parent->width();
+    defaultY = parent->height() - 220;
     sizeX = 50;
-    sizeY = 86;
+    sizeY = 85;
     image = new QPixmap("../SuperCop/Images/Running/Run0_1.png");
     frame = 0;
     lastActionPressed = 0;
+    jumpframe=0;
 
 //    playerScreenPos(parent);
 }
@@ -23,8 +26,7 @@ Player::Player(QWidget *parent)
 Player::~Player()
 {
     delete image;
-}
-
+}//clears potential memory leaks
 
 void Player::drawPlayer(QPainter &painter)
 {
@@ -48,10 +50,19 @@ void Player::playerScreenPos(QWidget *w)
 void Player::playerAction(int action)
 {
     //If the new direction does not match the previous direction, reset the frame counter to zero.
-    if(action != lastActionPressed)
-    {
-        frame = 0;
-        lastActionPressed = action;
+    if(0==jumpframe){
+        if(2==lastActionPressed){
+            lastActionPressed = action;
+//            action=0;
+         }
+         else if(action != lastActionPressed)
+         {
+            frame = 0;
+            lastActionPressed = action;
+         }
+    }
+    else {
+        action=2;
     }
 
 
@@ -79,26 +90,46 @@ void Player::playerAction(int action)
 
 void Player::jump()
 {
-    frame = 0;
-    changeImage("../SuperCop/Images/Running/Run0_1.png");
-    //IGNORE THIS FUNCTION FOR NOW
-}
+    jumpframe++;
+
+    if(0 < jumpframe && 9 > jumpframe)
+    {
+        QString imagePath = QString("../SuperCop/Images/Rolling/Roll%1.png").arg(QString::number(jumpframe));
+        changeImage(imagePath);
+
+        if (5>jumpframe){
+            posY-=25;
+        }
+        else if (5<=jumpframe){
+            posY+=25;
+        }
+
+        if (posX <= rightbound-sizeX)
+        posX+=10;
+
+    }
+        else{
+        jumpframe = 0;
+        changeImage("../SuperCop/Images/Running/Run0_1.png");
+        lastActionPressed = 2;
+        }
+}//Jumping
 
 
 void Player::roll()
 {
     frame++;
 
-    if(0 < frame && 9 > frame)
+    if(0 < frame && 9 > frame && posX <= rightbound-sizeX)
     {
-        //Resizes the player to half size
+
 
         QString imagePath = QString("../SuperCop/Images/Rolling/Roll%1.png").arg(QString::number(frame));
         changeImage(imagePath);
-        frame++;
+
+        posX++;//rolling is faster than running right now
     }
-    else
-    {
+    else {
         //After one loop, return the player to normal size and continue running to the right.
         sizeX = 50;
         sizeY = 86;
@@ -106,7 +137,7 @@ void Player::roll()
         changeImage("../SuperCop/Images/Running/Run0_1.png");
         lastActionPressed = 0;
     }
-}
+}//rolling
 
 
 void Player::run()
@@ -114,15 +145,18 @@ void Player::run()
     frame++;
     QString imagePath = QString("../SuperCop/Images/Running/Run0_%1.png").arg(frame);
 
-    if(0 < frame && 4 > frame)
+    if(0 < frame && 4 > frame && posX <= rightbound-sizeX)
     {
+
         changeImage(imagePath);
+        posX+=7;//running has a speed. 7 is an arbitrary standard speed for "moving" objects for now.
     }
     else
     {
         frame = 0;
         changeImage("../SuperCop/Images/Running/Run0_1.png");
     }
+
 }
 
 
@@ -132,9 +166,10 @@ void Player::runInverted()
 
     QString imagePath = QString("../SuperCop/Images/Running/Run1_%1.png").arg(frame);
 
-    if(0 < frame && 4 > frame)
+    if(0 < frame && 4 > frame && posX >= leftbound)
     {
         changeImage(imagePath);
+        posX-=7;//running has a speed. 7 is an arbitrary standard speed for "moving" objects for now.
     }
     else
     {
@@ -146,8 +181,9 @@ void Player::runInverted()
 
 void Player::standBy()
 {
-    if(1 == lastActionPressed)
+    if(1 == lastActionPressed||0==lastActionPressed)
         changeImage("../SuperCop/Images/Running/Run0_1.png");
+
 
     if(4 == lastActionPressed)
         changeImage("../SuperCop/Images/Running/Run1_1.png");
@@ -157,7 +193,12 @@ void Player::standBy()
 int Player::getFrame()
 {
     return frame;
-}
+}//Accessor
+
+int Player::getjumpframe()
+{
+    return jumpframe;
+}//Accessor
 
 void Player::setPosX(int x)
 {

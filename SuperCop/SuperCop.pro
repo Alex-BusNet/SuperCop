@@ -19,7 +19,9 @@ SOURCES += main.cpp\
     highscores.cpp \
     supercopgame.cpp \
     player.cpp \
-    enemy.cpp
+    enemy.cpp \
+    donut.cpp \
+    wall.cpp
 
 HEADERS  += mainwindow.h \
     controls.h \
@@ -27,7 +29,9 @@ HEADERS  += mainwindow.h \
     highscores.h \
     supercopgame.h \
     player.h \
-    enemy.h
+    enemy.h \
+    donut.h \
+    wall.h
 
 FORMS    += mainwindow.ui \
     controls.ui \

@@ -1,5 +1,5 @@
-#ifndef ENEMY_H
-#define ENEMY_H
+#ifndef WALL_H
+#define WALL_H
 
 #include <QPainter>
 #include <QPixmap>
@@ -8,13 +8,13 @@
 #include <QPixmap>
 #include <QKeyEvent>
 
-class Enemy
+class Wall
 {
 public:
-    Enemy(QWidget *parent);
-    ~Enemy();
+    Wall(QWidget *parent);
+    ~Wall();
 
-    void drawEnemy(QPainter &painter);
+    void drawWall(QPainter &painter);
     void changeImage(QString str);
 
     void setPosX(int x);
@@ -35,8 +35,8 @@ private:
     int posY;
     int sizeX;
     int sizeY;
-    QPixmap *robot;
+    QPixmap *wall;
     QTimer *moveTimer;
 };
 
-#endif // ENEMY_H
+#endif // WALL_H

@@ -1,5 +1,5 @@
-#ifndef ENEMY_H
-#define ENEMY_H
+#ifndef DONUT_H
+#define DONUT_H
 
 #include <QPainter>
 #include <QPixmap>
@@ -8,14 +8,16 @@
 #include <QPixmap>
 #include <QKeyEvent>
 
-class Enemy
+class Donut
 {
 public:
-    Enemy(QWidget *parent);
-    ~Enemy();
+    Donut(QWidget *parent);
+    ~Donut();
 
-    void drawEnemy(QPainter &painter);
+    void drawDonut(QPainter &painter);
     void changeImage(QString str);
+    void eaten();
+    void noteaten();
 
     void setPosX(int x);
     void setPosY(int y);
@@ -35,8 +37,8 @@ private:
     int posY;
     int sizeX;
     int sizeY;
-    QPixmap *robot;
+    QPixmap *donut;
     QTimer *moveTimer;
 };
 
-#endif // ENEMY_H
+#endif // DONUT_H

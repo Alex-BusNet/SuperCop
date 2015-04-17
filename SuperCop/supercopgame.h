@@ -13,8 +13,10 @@
 #include <QKeyEvent>
 
 
+#include "donut.h"
 #include <QMessageBox>
 #include "enemy.h"
+#include "wall.h"
 
 namespace Ui {
 class SuperCopGame;
@@ -37,12 +39,15 @@ private:
 
 
     bool paused;
-    QPixmap* robot;
+    bool playerstopped;
     int picX,picY;
     int picHeight, picWidth;
     int gamescore;
     Enemy *enemy;
     int gameover;
+    Donut *donut;
+    int spawntimer;
+    Wall *wall;
 
 public:
     void paintEvent(QPaintEvent *e);
@@ -52,6 +57,8 @@ public:
     void keyPressEvent(QKeyEvent *evt);
     void keyReleaseEvent(QKeyEvent *evt);
     void setLastKeyPress(int keyPress);
+
+    void gameended();
 signals:
 
 public slots:
