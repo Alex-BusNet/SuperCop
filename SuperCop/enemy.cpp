@@ -6,28 +6,22 @@
 Enemy::Enemy(QWidget *parent)
 {
 
-    posX = 820;
-    posY = parent->height() - 220;
-    sizeX = 85;
-    sizeY = 85;
-    robot = new QPixmap("../SuperCop/Images/robot.png");
-    moveTimer = new QTimer();
-    moveTimer->setInterval(10);
-    moveTimer->start();
-    speed=0;//7 is an arbitrary standard speed for "moving" objects for now.
+    posX = 620;
+    posY = parent->height() - 140;
+    sizeX = 45;
+    sizeY = 45;
+    robot = new QPixmap("../SuperCop/Images/Robot/robot.png");
 }
 
 Enemy::~Enemy()
 {
     delete robot;
-    moveTimer->stop();
-    delete moveTimer;
-}//clears potential memory leaks
+
+}//Destructor
 
 void Enemy::drawEnemy(QPainter &painter)
 {
     painter.drawPixmap(posX, posY, sizeX, sizeY, *robot);
-    posX-=speed;
 }
 
 void Enemy::changeImage(QString str)
@@ -57,11 +51,6 @@ void Enemy::setSizeY(int y)
     sizeY=y;
 }//Mutator
 
-void Enemy::setSpeed(int speed)
-{
-    this->speed=speed;
-}//Mutator
-
 int Enemy::getPosX()
 {
     return posX;
@@ -81,9 +70,3 @@ int Enemy::getSizeY()
 {
     return sizeY;
 }//Accessor
-
-int Enemy::getSpeed()
-{
-   return speed;
-}//Accessor
-

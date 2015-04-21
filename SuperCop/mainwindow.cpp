@@ -60,7 +60,6 @@ void MainWindow::on_actionHigh_Scores_triggered()
         hScore = new HighScores();
     }
     hScore->show();
-
 }//Opens an instance of the High Score window
 
 void MainWindow::on_Easy_1P_triggered()

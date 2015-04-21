@@ -5,28 +5,22 @@
 
 Donut::Donut(QWidget *parent)
 {
-    posX = 670;
-    posY = parent->height() - 270;
-    sizeX = 30;
-    sizeY = 30;
-    donut = new QPixmap("../SuperCop/Images/donut.png");
-    moveTimer = new QTimer();
-    moveTimer->setInterval(10);
-    moveTimer->start();
-    speed=0;//Donut has a speed. 4 is an arbitrary standard speed for "non-moving" objects for now.
+    windowwidth=parent->width();
+    posX = (parent->width() / 3) + 20;
+    posY = parent->height() - 140;
+    sizeX = 20;
+    sizeY = 20;
+    donut = new QPixmap("../SuperCop/Images/Donut/Donut.png");
 }
 
 Donut::~Donut()
 {
     delete donut;
-    moveTimer->stop();
-    delete moveTimer;
 }//clears potential memory leaks
 
 void Donut::drawDonut(QPainter &painter)
 {
     painter.drawPixmap(posX, posY, sizeX, sizeY, *donut);
-    posX-=speed;
 }
 
 void Donut::changeImage(QString str)
@@ -37,14 +31,12 @@ void Donut::changeImage(QString str)
 
 void Donut::eaten()
 {
-    posX=650;
-    speed=0;
+    posX=windowwidth;
 }
 
 void Donut::noteaten()
 {
-    posX=650;
-    speed=0;
+    posX=windowwidth;
 }
 
 
@@ -70,10 +62,6 @@ void Donut::setSizeY(int y)
     sizeY=y;
 }//Mutator
 
-void Donut::setSpeed(int speed)
-{
-    this->speed=speed;
-}//Mutator
 
 int Donut::getPosX()
 {
@@ -93,10 +81,5 @@ int Donut::getSizeX()
 int Donut::getSizeY()
 {
     return sizeY;
-}//Accessor
-
-int Donut::getSpeed()
-{
-   return speed;
 }//Accessor
 

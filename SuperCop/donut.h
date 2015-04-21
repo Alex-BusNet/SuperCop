@@ -23,22 +23,19 @@ public:
     void setPosY(int y);
     void setSizeX(int x);
     void setSizeY(int y);
-    void setSpeed(int speed);
 
     int getPosX();
     int getPosY();
     int getSizeX();
     int getSizeY();
-    int getSpeed();
 
 private:
-    int speed;
+    int windowwidth;
     int posX;
     int posY;
     int sizeX;
     int sizeY;
     QPixmap *donut;
-    QTimer *moveTimer;
 };
 
 #endif // DONUT_H

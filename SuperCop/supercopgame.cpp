@@ -7,20 +7,17 @@
 #include <QDebug>
 #include <ctime>
 #include <cstdlib>
-
-
 #include <fstream>
 using namespace std;
-#include "enemy.h"
-#include "donut.h"
-#include "wall.h"
 
+#include <donut.h>
 
 SuperCopGame::SuperCopGame(QWidget *parent) :
     QWidget(parent)
 {
     srand(time(0));
     player = new Player(this);
+    lb = new LevelBase(this);
 
     //Sets the Game Background (Currently Temporary)
     QPixmap bkgnd("../SuperCop/Images/background_temp.jpg");
@@ -36,7 +33,7 @@ SuperCopGame::SuperCopGame(QWidget *parent) :
 
     keyTimer = new QTimer();
     keyTimer->setInterval(5);
-//    connect(keyTimer, SIGNAL(timeout()), this, SLOT(pollKey()));
+    connect(keyTimer, SIGNAL(timeout()), this, SLOT(pollKey()));
     keyTimer->start();
 
     isUpPressed = false;
@@ -46,17 +43,12 @@ SuperCopGame::SuperCopGame(QWidget *parent) :
 
     lastKeyPress = 0;
 
-
-
-    playerstopped=false;
-    spawntimer=0;
-    donut = new Donut(this);
-    paused=false;
     gamescore=0;
-    gameover=0;
     enemy = new Enemy(this);
-    wall = new Wall(this);
-//    enemy->setSpeed(10);//We can use this as the difference between difficulties
+    isenemy=false;
+    donut= new Donut(this);
+    eventNumber=0;
+//    lvbs[3]=NULL;
 }
 
 
@@ -65,36 +57,25 @@ SuperCopGame::~SuperCopGame()
     delete timer;
     delete player;
     delete keyTimer;
-
-    delete enemy;
-    delete donut;
-    delete wall;
-}//clears potential memory leaks
+}
 
 
 void SuperCopGame::keyPressEvent(QKeyEvent *evt)
 {
-    playerstopped=false;
     switch(evt->key())
     {
-    case Qt::Key_D:
+    case Qt::Key_Right:
         isRightPressed = true;
         break;
-    case Qt::Key_S:
+    case Qt::Key_Down:
         isDownPressed = true;
         break;
-    case Qt::Key_W:
+    case Qt::Key_Up:
         isUpPressed = true;
         break;
-    case Qt::Key_A:
+    case Qt::Key_Left:
         isLeftPressed = true;
         break;
-
-
-    case Qt::Key_Escape:
-         paused = true;
-
-
     default:
         break;
     }
@@ -105,23 +86,18 @@ void SuperCopGame::keyReleaseEvent(QKeyEvent *evt)
 {
     switch(evt->key())
     {
-    case Qt::Key_D:
+    case Qt::Key_Right:
         isRightPressed = false;
         break;
-    case Qt::Key_S:
+    case Qt::Key_Down:
         isDownPressed = false;
         break;
-    case Qt::Key_W:
+    case Qt::Key_Up:
         isUpPressed = false;
         break;
-    case Qt::Key_A:
+    case Qt::Key_Left:
         isLeftPressed = false;
         break;
-
-    case Qt::Key_Escape:
-        paused=false;
-        break;
-
     default:
         break;
     }
@@ -133,210 +109,299 @@ void SuperCopGame::setLastKeyPress(int key)
     this->lastKeyPress = key;
 }
 
+void SuperCopGame::setPlatformX(int x)
+{
+    lb->setPlatformPosX(x);
+}
+
+void SuperCopGame::obstacleMovement()
+{
+    if((1 == player->getPlayerDirection()) && (player->getPosX() + player->getSizeX()) >= player->getRightBound())
+    {
+        lb->setPlatformPosX(lb->getPlatformPosX() - 5);
+        lb->setStairPosX(lb->getStairPosX() - 5);
+
+        donut->setPosX(donut->getPosX()-5);
+    }
+
+    if((-1 == player->getPlayerDirection()) && (player->getPosX() <= player->getLeftBound()))
+    {
+        lb->setPlatformPosX(lb->getPlatformPosX() + 5);
+        lb->setStairPosX(lb->getStairPosX() + 5);
+
+        donut->setPosX(donut->getPosX()+5);
+    }
+}
+
+void SuperCopGame::physics()
+{
+    //Platform Collision Detection
+    if((player->getPosX() >= lb->getPlatformPosX()) && (player->getPosX() <= lb->getPlatformEnd()))
+    {
+        if(player->getPosY() < lb->getPlatformPosY())
+        {
+            player->setPosY(lb->getPlatformPosY() - 43);
+            player->setCollided(true);
+        }
+        else
+        {
+
+            if(player->getPosY() < player->getGround())
+            {
+                player->setCollided(false);
+            }
+            else
+            {
+                player->setCollided(true);
+            }
+        }
+    }
+
+    else
+    {
+        if(player->getPosY() <= player->getGround())
+        {
+            player->setCollided(false);
+        }
+        else
+        {
+            player->setCollided(true);
+        }
+    }
+        //Stair Collision Detection
+        //    if(player->getPosX() >= lb->getStep1PosX() && player->getPosX() < lb->getStep2PosX())
+        //    {
+        //        if(player->getPosY() < lb->getStep1PosY())
+        //        {
+        //            player->setPosY(lb->getStep1PosY());
+        //            player->setCollided(true);
+        //        }
+        //        else
+        //        {
+        //            player->setPosY(player->getPosY());
+        //            player->setCollided(true);
+        //        }
+        //    }
+        //    else if(player->getPosX() >= lb->getStep2PosX() && player->getPosX() < lb->getStep3PosX())
+        //    {
+        //        if(player->getPosY() < lb->getStep2PosY())
+        //        {
+        //            player->setPosY(lb->getStep2PosY());
+        //            player->setCollided(true);
+        //        }
+        //        else
+        //        {
+        //            player->setPosY(player->getPosY());
+        //            player->setCollided(true);
+        //        }
+        //    }
+        //    else if(player->getPosX() >= lb->getStep3PosX() && player->getPosX() < lb->getStep4PosX())
+        //    {
+        //        if(player->getPosY() < lb->getStep3PosY())
+        //        {
+        //            player->setPosY(lb->getStep3PosY());
+        //            player->setCollided(true);
+        //        }
+        //        else
+        //        {
+        //            player->setPosY(player->getPosY());
+        //            player->setCollided(true);
+        //        }
+        //    }
+        //    else if(player->getPosX() >= lb->getStep4PosX() && player->getPosX() < lb->getStep4PosX() + 16)
+        //    {
+        //        if(player->getPosY() < lb->getStep4PosY())
+        //        {
+        //            player->setPosY(lb->getStep4PosY());
+        //            player->setCollided(true);
+        //        }
+        //        else
+        //        {
+        //            player->setPosY(player->getPosY());
+        //            player->setCollided(true);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        player->setPosX(player->getPosX());
+        //        player->setCollided(true);
+    //    }
+}
 
 
+int SuperCopGame::getPlatformX()
+{
+    return lb->getPlatformPosX();
+}
 
-void SuperCopGame::pollKey()
+void SuperCopGame::pollKey() //DO NOT MODIFY. Code Works now.
 {
     //Checks if any of the keys are pressed.
-    if(isRightPressed || isLeftPressed || isUpPressed || isDownPressed||paused||playerstopped)
-    {
-        if(isRightPressed)
-            lastKeyPress = 1;
-        else if(isUpPressed)
-            lastKeyPress = 2;
-        else if(isDownPressed)
-            lastKeyPress = 3;
-        else if(isLeftPressed)
-            lastKeyPress = 4;
-
-
-        else if(playerstopped)
-            lastKeyPress = 0;
-        else if(paused){
-                QMessageBox pbox;
-                pbox.setText("Paused");
-                pbox.exec();
-                paused = false;
-        }
-
-
-        else
-            lastKeyPress = 0;
-    }
+    if(isDownPressed)
+        lastKeyPress = 3;
+    else if(isUpPressed)
+        lastKeyPress = 2;
+    else if(isRightPressed)
+        lastKeyPress = 1;
+    else if(isLeftPressed )
+        lastKeyPress = 4;
     else
     {
         //Checks if none of the keys are pressed before checking if some of the keys are pressed.
         if(!isUpPressed && !isDownPressed && !isLeftPressed && !isRightPressed)
-            if(3 != lastKeyPress&&2!=lastKeyPress){
-                    lastKeyPress=lastKeyPress;
-            }
-            else if (2==lastKeyPress) {
-                lastKeyPress=0;
-            }
-            else{
-                lastKeyPress=1;
-            }//Keeps roll motion from looping
-        else if(!isUpPressed && !isDownPressed && !isLeftPressed)
-            lastKeyPress = 1;
-        else if(!isUpPressed && !isLeftPressed && !isRightPressed)
-            lastKeyPress = 2;
-        else if(!isUpPressed && !isLeftPressed && !isRightPressed)
-            lastKeyPress = 3;
-        else if(!isUpPressed && !isDownPressed && !isRightPressed)
-            lastKeyPress = 4;
+        {
+            if(3 == lastKeyPress && player->isRolling())
+                lastKeyPress = 3;
+            else if(2 == lastKeyPress && player->isJumping())
+                lastKeyPress = 2;
+            else if(1 == lastKeyPress && player->isMoveRight())
+                lastKeyPress = 1;
+            else if (4 == lastKeyPress && player->isMoveLeft())
+                lastKeyPress = 4;
+            else
+                lastKeyPress = 0;
+        }
         else
             lastKeyPress = 0;
-     }
+    }
 }
-
 
 void SuperCopGame::updateField()
 {
-    pollKey();
     player->playerAction(lastKeyPress);
+    obstacleMovement();
+    physics();
     this->update();
 }
-
 
 void SuperCopGame::paintEvent(QPaintEvent *e)
 {
     QPainter painter(this);
     player->drawPlayer(painter);
-
-    spawntimer++;
-    donut->drawDonut(painter);
-    enemy->drawEnemy(painter);
-    wall->drawWall(painter);
-
-    if((spawntimer)%150==0){
-    enemy->setSpeed(7);
-    }//periodically spawns a new enemy-mostly placeholder for level design
-
-    if((spawntimer)%30==0){
-    donut->setSpeed(4);
-    }//periodically spawns a new donut-mostly placeholder for level design
-
-    if((((donut->getPosX())<=player->getPosX())&&((donut->getPosX()+30)>=player->getPosX()))||(((donut->getPosX())<=(player->getPosX()+50))&&((donut->getPosX()+30)>=(player->getPosX()+50)))){
-      if (((donut->getPosY()+donut->getSizeY())>=player->getPosY())&&(donut->getPosY()<=player->getPosY())){
-        gamescore+=5;
-        donut->eaten();
-      }
-    }//runs if player hits a donut
-    if(donut->getPosX()<=0){
-        donut->noteaten();
-    }//runs if donut leaves the left side of the screen
-
-    if(enemy->getPosX()<=0){
-        enemy->setSpeed(0);
-        enemy->setPosX(700);
-    }//runs if enemy leaves the left side of the screen
-
-    if((spawntimer)%70==0){
-    wall->setSpeed(4);
-    }//periodically spawns a new wall-mostly placeholder for level design
-    if(wall->getPosX()<=0){
-        wall->setSpeed(0);
-        wall->setPosX(700);
-    }//runs if enemy leaves the left side of the screen
-
-    if(player->getPosX()>=(this->width()-player->getSizeX())||0>=player->getPosX()){
-        playerstopped=true;
-        }//Stops player if they reach the edge on their own(Exception: see if statement below this)
-
-    if(wall->getPosX()<=player->getPosX()+51&&wall->getPosX()>=player->getPosX()&&wall->getPosY()==player->getPosY()){
-       player->setPosX(wall->getPosX()-51);
-
-       if(-30>player->getPosX()){
-           gameended();
-           player->setPosX(700);
-
-       }//Ends game if player gets pushed out of the screen by a wall
-    }
-
-    if((enemy->getPosX()<=(player->getPosX()))&&((enemy->getPosX()+80)>=(player->getPosX()))&&(enemy->getPosY()==player->getPosY())&&(0==gameover)&&(0==player->getjumpframe())){
-       gameended();
-    }//Ends game if player hits an enemy
-
+    lb->drawLevel(painter);
 
     //For debugging purposes
     QPen pen = QPen(Qt::red);
     painter.setPen(pen);
-    painter.drawText(10,10, QString("Frame: %1").arg(QString::number(player->getFrame())));
-    painter.drawText(20,20, QString("LastKeyPress: %1").arg(QString::number(lastKeyPress)));
+    painter.drawText(10, 10, QString("Frame: %1").arg(QString::number(player->getFrame())));
+    painter.drawText(10, 20, QString("LastKeyPress: %1").arg(QString::number(lastKeyPress)));
 
+    if(true==isenemy){
+    enemy->setPosX(enemy->getPosX()-5);
+    }//enemy moves based on time, not player-basic AI
 
-    painter.drawText(10,30, QString("Score: %1").arg(QString::number(gamescore)));
-}
+    donut->drawDonut(painter);
 
+    if((1 == player->getPlayerDirection()) && (player->getPosX() + player->getSizeX()) >= player->getRightBound())
+    {
+       isenemy=true;
+    }//makes enemy's initialization dependant on where in the level the player is
 
-void SuperCopGame::gameended()
+    if(true==isenemy){
+       enemy->drawEnemy(painter);
+    }//makes enemy not spawn immediately-and will allow for enemies to despawn later maybe?
+
+    if((donut->getPosX() <= player->getPosX()&&donut->getPosX()+45>=player->getPosX())&&donut->getPosY()==player->getPosY()){
+       donut->eaten();
+       gamescore+=10;
+     //  level1(e);
+    }//handles collisions with donut
+
+    if (-35==enemy->getPosX()){
+        enemy->setPosX(this->width());
+    }//resets enemy if it exits the screen- this is placeholder for level design
+
+    if((enemy->getPosX() <= player->getPosX()&&enemy->getPosX()+35>=player->getPosX())&&enemy->getPosY()==player->getPosY())
+    {
+        enemy->setPosY(enemy->getPosY()-1);
+        timer->stop();
+        QMessageBox mbox;
+        mbox.setText("Game Over");
+        mbox.exec();
+        ifstream scoreset;
+        scoreset.open("../SuperCop/highscores.txt");
+        int scores;
+
+        if(scoreset.is_open()){
+
+            scoreset >> scores;
+            int firstscore = scores;
+            scoreset >> scores;
+            int secondscore = scores;
+            scoreset >> scores;
+            int thirdscore = scores;
+            scoreset >> scores;
+            int fourthscore = scores;
+            scoreset >> scores;
+            int fifthscore = scores;
+            scoreset.close();
+
+            if(firstscore < gamescore)
+            {
+                   fifthscore = fourthscore;
+                   fourthscore = thirdscore;
+                   thirdscore = secondscore;
+                   secondscore = firstscore;
+                   firstscore = gamescore;
+
+                   QMessageBox sbox;
+                   sbox.setText("New High Score: "+ QString::number(gamescore));
+                   sbox.exec();
+            }
+            else if(secondscore < gamescore)
+            {
+                   fifthscore = fourthscore;
+                   fourthscore = thirdscore;
+                   thirdscore = secondscore;
+                   secondscore = gamescore;
+            }
+            else if(thirdscore < gamescore)
+            {
+                   fifthscore = fourthscore;
+                   fourthscore = thirdscore;
+                   thirdscore = gamescore;
+            }
+            else if(fourthscore < gamescore)
+            {
+                   fifthscore = fourthscore;
+                   fourthscore = gamescore;
+            }
+            else if(fifthscore<gamescore)
+            {
+                   fifthscore = gamescore;
+            }
+
+            ofstream setscores;
+            setscores.open("../SuperCop/highscores.txt");
+
+            setscores << firstscore << endl;
+            setscores << secondscore << endl;
+            setscores << thirdscore << endl;
+            setscores << fourthscore << endl;
+            setscores << fifthscore << endl;
+
+            setscores.close();
+            }//resets high scores if new high score acheived
+
+         }
+    }
+
+void SuperCopGame::level1(QPaintEvent *e)
 {
-    timer->stop();
-    QMessageBox mbox;
-    mbox.setText("Game Over");
-    mbox.exec();
-    gameover=1;
+//    qDebug()<<"level1";
+//    QPainter paint(this);
+//    if (0==eventNumber){
+//       LevelBase *stair1=new LevelBase(this);
+//       stair1->setStairPosX(this->width());
+//       stair1->drawStairs(paint);
+//       qDebug()<<"stairs";
 
-    ifstream scoreset;//may be necessary to make seperate high score pages for each difficulty setting
-    scoreset.open("../SuperCop/highscores.txt");
-    int scores;
-
-    if(scoreset.is_open()){
-
-        scoreset>>scores;
-        int firstscore=scores;
-        scoreset>>scores;
-        int secondscore=scores;
-        scoreset>>scores;
-        int thirdscore=scores;
-        scoreset>>scores;
-        int fourthscore=scores;
-        scoreset>>scores;
-        int fifthscore=scores;
-        scoreset.close();
-
-        if(firstscore<gamescore){
-               fifthscore=fourthscore;
-               fourthscore=thirdscore;
-               thirdscore=secondscore;
-               secondscore=firstscore;
-               firstscore=gamescore;
-
-               QMessageBox sbox;
-               sbox.setText("New High Score: "+ QString::number(gamescore));
-               sbox.exec();
-
-        }//If new Higehest score
-        else if(secondscore<gamescore){
-               fifthscore=fourthscore;
-               fourthscore=thirdscore;
-               thirdscore=secondscore;
-               secondscore=gamescore;
-        }//If new second Higehest score
-        else if(thirdscore<gamescore){
-               fifthscore=fourthscore;
-               fourthscore=thirdscore;
-               thirdscore=gamescore;
-        }//If new third Higehest score
-        else if(fourthscore<gamescore){
-               fifthscore=fourthscore;
-               fourthscore=gamescore;
-        }//If  fourth Higehest score
-        else if(fifthscore<gamescore){
-               fifthscore=gamescore;
-        }//If new fifth Higehest score
-
-        ofstream setscores;
-        setscores.open("../SuperCop/highscores.txt");
-
-        setscores<<firstscore<<endl;
-        setscores<<secondscore<<endl;
-        setscores<<thirdscore<<endl;
-        setscores<<fourthscore<<endl;
-        setscores<<fifthscore<<endl;
-
-        setscores.close();
-        }//resets high scores if new high score acheived
-
-}//concludes game ending sequence
+//    }
+//    if(1==eventNumber){
+//        LevelBase *platform1=new LevelBase(this);
+//        platform1->setPlatformPosX(this->width());
+//        platform1->drawPlatform(paint);
+//        qDebug()<<"plat";
+//    }
+//    eventNumber++;
+}

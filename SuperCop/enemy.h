@@ -21,22 +21,19 @@ public:
     void setPosY(int y);
     void setSizeX(int x);
     void setSizeY(int y);
-    void setSpeed(int speed);
 
     int getPosX();
     int getPosY();
     int getSizeX();
     int getSizeY();
-    int getSpeed();
 
 private:
-    int speed;
     int posX;
     int posY;
     int sizeX;
     int sizeY;
+    int frame;
     QPixmap *robot;
-    QTimer *moveTimer;
 };
 
 #endif // ENEMY_H
