@@ -9,7 +9,7 @@
 #include <cstdlib>
 #include <fstream>
 using namespace std;
-
+#include <vector>
 #include <donut.h>
 
 SuperCopGame::SuperCopGame(QWidget *parent) :
@@ -44,11 +44,11 @@ SuperCopGame::SuperCopGame(QWidget *parent) :
     lastKeyPress = 0;
 
     gamescore=0;
-    enemy = new Enemy(this);
-    isenemy=false;
+
     donut= new Donut(this);
     eventNumber=0;
-//    lvbs[3]=NULL;
+
+    this->level1();
 }
 
 
@@ -286,122 +286,118 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
     painter.drawText(10, 10, QString("Frame: %1").arg(QString::number(player->getFrame())));
     painter.drawText(10, 20, QString("LastKeyPress: %1").arg(QString::number(lastKeyPress)));
 
-    if(true==isenemy){
-    enemy->setPosX(enemy->getPosX()-5);
-    }//enemy moves based on time, not player-basic AI
 
     donut->drawDonut(painter);
-
-    if((1 == player->getPlayerDirection()) && (player->getPosX() + player->getSizeX()) >= player->getRightBound())
-    {
-       isenemy=true;
-    }//makes enemy's initialization dependant on where in the level the player is
-
-    if(true==isenemy){
-       enemy->drawEnemy(painter);
-    }//makes enemy not spawn immediately-and will allow for enemies to despawn later maybe?
-
     if((donut->getPosX() <= player->getPosX()&&donut->getPosX()+45>=player->getPosX())&&donut->getPosY()==player->getPosY()){
        donut->eaten();
        gamescore+=10;
-     //  level1(e);
     }//handles collisions with donut
 
-    if (-35==enemy->getPosX()){
-        enemy->setPosX(this->width());
-    }//resets enemy if it exits the screen- this is placeholder for level design
+    for(int i=0;i<enemies.size();i++){
 
-    if((enemy->getPosX() <= player->getPosX()&&enemy->getPosX()+35>=player->getPosX())&&enemy->getPosY()==player->getPosY())
-    {
-        enemy->setPosY(enemy->getPosY()-1);
-        timer->stop();
-        QMessageBox mbox;
-        mbox.setText("Game Over");
-        mbox.exec();
-        ifstream scoreset;
-        scoreset.open("../SuperCop/highscores.txt");
-        int scores;
 
-        if(scoreset.is_open()){
+        if((1 == player->getPlayerDirection()) && (player->getPosX() + player->getSizeX()) >= player->getRightBound())
+        {
+            (*(enemies.at(0))).setActive(true);
+        }//makes enemy's initialization dependant on where in the level the player is-must set for each enemy
 
-            scoreset >> scores;
-            int firstscore = scores;
-            scoreset >> scores;
-            int secondscore = scores;
-            scoreset >> scores;
-            int thirdscore = scores;
-            scoreset >> scores;
-            int fourthscore = scores;
-            scoreset >> scores;
-            int fifthscore = scores;
-            scoreset.close();
+        if((1 == player->getPlayerDirection()) && (player->getPosX() + player->getSizeX()) >= player->getLeftBound()+100)
+        {
+            (*(enemies.at(1))).setActive(true);
+        }
 
-            if(firstscore < gamescore)
-            {
-                   fifthscore = fourthscore;
-                   fourthscore = thirdscore;
-                   thirdscore = secondscore;
-                   secondscore = firstscore;
-                   firstscore = gamescore;
 
-                   QMessageBox sbox;
-                   sbox.setText("New High Score: "+ QString::number(gamescore));
-                   sbox.exec();
+
+        if(true==(*(enemies.at(i))).getActive()){
+            (*(enemies.at(i))).setPosX((*(enemies.at(i))).getPosX()-5);
+            (*(enemies.at(i))).drawEnemy(painter);
+        }//makes enemy not spawn immediately-and will allow for enemies to despawn later maybe?
+        //enemy moves based on time, not player-basic AI
+
+        if(((*(enemies.at(i))).getPosX() <= player->getPosX()&&(*(enemies.at(i))).getPosX()+35>=player->getPosX())&&(*(enemies.at(i))).getPosY()==player->getPosY()&&true==player->isJumping()){
+            (*(enemies.at(i))).setPosX(-35);
+        }//Kills enemy
+
+        if(((*(enemies.at(i))).getPosX() <= player->getPosX()&&(*(enemies.at(i))).getPosX()+35>=player->getPosX())&&(*(enemies.at(i))).getPosY()==player->getPosY()&&false==player->isJumping())
+        {
+             (*(enemies.at(i))).setPosY(enemy->getPosY()-1);
+             timer->stop();
+             QMessageBox mbox;
+             mbox.setText("Game Over");
+             mbox.exec();
+             ifstream scoreset;
+             scoreset.open("../SuperCop/highscores.txt");
+             int scores;
+
+             if(scoreset.is_open()){
+
+                scoreset >> scores;
+                int firstscore = scores;
+                scoreset >> scores;
+                int secondscore = scores;
+                scoreset >> scores;
+                int thirdscore = scores;
+                scoreset >> scores;
+                int fourthscore = scores;
+                scoreset >> scores;
+                int fifthscore = scores;
+                scoreset.close();
+
+                if(firstscore < gamescore)
+                {
+                      fifthscore = fourthscore;
+                      fourthscore = thirdscore;
+                      thirdscore = secondscore;
+                      secondscore = firstscore;
+                      firstscore = gamescore;
+
+                      QMessageBox sbox;
+                      sbox.setText("New High Score: "+ QString::number(gamescore));
+                      sbox.exec();
+                }
+                else if(secondscore < gamescore)
+                {
+                       fifthscore = fourthscore;
+                       fourthscore = thirdscore;
+                       thirdscore = secondscore;
+                       secondscore = gamescore;
+                }
+                else if(thirdscore < gamescore)
+                {
+                       fifthscore = fourthscore;
+                       fourthscore = thirdscore;
+                       thirdscore = gamescore;
+                }
+                else if(fourthscore < gamescore)
+               {
+                       fifthscore = fourthscore;
+                       fourthscore = gamescore;
+                }
+               else if(fifthscore<gamescore)
+                {
+                       fifthscore = gamescore;
+                }
+
+                ofstream setscores;
+                setscores.open("../SuperCop/highscores.txt");
+
+                setscores << firstscore << endl;
+               setscores << secondscore << endl;
+                setscores << thirdscore << endl;
+                setscores << fourthscore << endl;
+                setscores << fifthscore << endl;
+
+                setscores.close();
+                }//resets high scores if new high score acheived
+
             }
-            else if(secondscore < gamescore)
-            {
-                   fifthscore = fourthscore;
-                   fourthscore = thirdscore;
-                   thirdscore = secondscore;
-                   secondscore = gamescore;
-            }
-            else if(thirdscore < gamescore)
-            {
-                   fifthscore = fourthscore;
-                   fourthscore = thirdscore;
-                   thirdscore = gamescore;
-            }
-            else if(fourthscore < gamescore)
-            {
-                   fifthscore = fourthscore;
-                   fourthscore = gamescore;
-            }
-            else if(fifthscore<gamescore)
-            {
-                   fifthscore = gamescore;
-            }
-
-            ofstream setscores;
-            setscores.open("../SuperCop/highscores.txt");
-
-            setscores << firstscore << endl;
-            setscores << secondscore << endl;
-            setscores << thirdscore << endl;
-            setscores << fourthscore << endl;
-            setscores << fifthscore << endl;
-
-            setscores.close();
-            }//resets high scores if new high score acheived
-
-         }
+        }//Handles allcases of enemy objects.
     }
 
-void SuperCopGame::level1(QPaintEvent *e)
-{
-//    qDebug()<<"level1";
-//    QPainter paint(this);
-//    if (0==eventNumber){
-//       LevelBase *stair1=new LevelBase(this);
-//       stair1->setStairPosX(this->width());
-//       stair1->drawStairs(paint);
-//       qDebug()<<"stairs";
+void SuperCopGame::level1(){
+    enemy = new Enemy(this);
+    enemy2 = new Enemy(this);
+    enemies.push_back(enemy);
+    enemies.push_back(enemy2);
 
-//    }
-//    if(1==eventNumber){
-//        LevelBase *platform1=new LevelBase(this);
-//        platform1->setPlatformPosX(this->width());
-//        platform1->drawPlatform(paint);
-//        qDebug()<<"plat";
-//    }
-//    eventNumber++;
-}
+}//This is the only way I can find to set up enemies so far

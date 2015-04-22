@@ -8,6 +8,7 @@
 #include <QPixmap>
 #include <QKeyEvent>
 
+
 class Enemy
 {
 public:
@@ -27,6 +28,9 @@ public:
     int getSizeX();
     int getSizeY();
 
+    bool getActive();
+    void setActive(bool act);
+
 private:
     int posX;
     int posY;
@@ -34,6 +38,7 @@ private:
     int sizeY;
     int frame;
     QPixmap *robot;
+    bool active;
 };
 
 #endif // ENEMY_H

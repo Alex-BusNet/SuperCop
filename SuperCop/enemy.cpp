@@ -11,6 +11,7 @@ Enemy::Enemy(QWidget *parent)
     sizeX = 45;
     sizeY = 45;
     robot = new QPixmap("../SuperCop/Images/Robot/robot.png");
+    active=false;
 }
 
 Enemy::~Enemy()
@@ -69,4 +70,14 @@ int Enemy::getSizeX()
 int Enemy::getSizeY()
 {
     return sizeY;
+}
+
+bool Enemy::getActive()
+{
+    return active;
+}
+
+void Enemy::setActive(bool act)
+{
+    active=act;
 }//Accessor

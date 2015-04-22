@@ -18,6 +18,8 @@
 
 #include <enemy.h>
 #include <donut.h>
+#include <vector>
+using namespace std;
 
 namespace Ui {
 class SuperCopGame;
@@ -44,12 +46,12 @@ private:
     QWidget* parent;
     int gamescore;
 
-    bool isenemy;
+
     Enemy *enemy;
     Donut *donut;
     int eventNumber;
-//    LevelBase *lvbs[];
-
+    vector<Enemy*>enemies;
+    Enemy *enemy2;
 public:
     void paintEvent(QPaintEvent *e);
     explicit SuperCopGame(QWidget *parent = 0);
@@ -61,7 +63,7 @@ public:
     void setPlatformX(int x);
     void obstacleMovement();
     void physics();
-    void level1(QPaintEvent *e);
+    void level1();
 
     int getPlatformX();
 
