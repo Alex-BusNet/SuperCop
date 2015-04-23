@@ -46,7 +46,6 @@ SuperCopGame::SuperCopGame(QWidget *parent) :
     gamescore=0;
 
     location=0;
-    this->level1();
 }
 
 
@@ -55,9 +54,16 @@ SuperCopGame::~SuperCopGame()
     delete timer;
     delete player;
     delete keyTimer;
-
+    for(int i=0;i<enemyspawn.size();i++){
+        delete enemies.at(i);
+    }
     enemies.clear();
+    enemyspawn.clear();
+    for(int i=0;i<donutspawn.size();i++){
+        delete donuts.at(i);
+    }
     donuts.clear();
+    donutspawn.clear();
 }
 
 
@@ -415,16 +421,20 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
         }//Handles all cases of enemy objects.
     }
 
-void SuperCopGame::level1(){
+void SuperCopGame::setVecs(QString level){
+
+    QString enemyfile("../SuperCop/" + level + "/enemy.txt");
+    QString donutfile("../SuperCop/" + level + "/donut.txt");
 
     ifstream enemyread;
-    enemyread.open("../SuperCop/level1enemy.txt");
+    enemyread.open(enemyfile.toStdString().c_str());
     int enemynum;
     if(enemyread.is_open()){
         while(enemyread>>enemynum){
             enemyspawn.push_back(enemynum);
         }
     }
+    enemyread.close();
 
     for(int i=0;i<enemyspawn.size();i++){
         Enemy *enemy;
@@ -433,19 +443,19 @@ void SuperCopGame::level1(){
     }
 
     ifstream donutread;
-    donutread.open("../SuperCop/level1donut.txt");
+    donutread.open(donutfile.toStdString().c_str());
     int donutnum;
     if(donutread.is_open()){
         while(donutread>>donutnum){
             donutspawn.push_back(donutnum);
         }
     }
+    donutread.close();
 
     for(int i=0;i<donutspawn.size();i++){
         Donut *donut;
         donut= new Donut(this);
         donuts.push_back(donut);
-
-
     }
 }//Initializes vectors
+

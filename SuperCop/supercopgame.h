@@ -63,7 +63,7 @@ public:
     void setPlatformX(int x);
     void obstacleMovement();
     void physics();
-    void level1();
+    void setVecs(QString level);
 
     int getPlatformX();
 

@@ -67,9 +67,11 @@ void MainWindow::on_Easy_1P_triggered()
     if(scg == NULL)
     {
         scg = new SuperCopGame();
+        scg->setVecs("level1");
     }else{
         delete scg;
         scg = new SuperCopGame();
+        scg->setVecs("level1");
     }
     scg->show();
 }
