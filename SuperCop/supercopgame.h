@@ -49,6 +49,8 @@ private:
     int location;
     vector<Donut*>donuts;
     vector<Enemy*>enemies;
+    vector<int>donutspawn;
+    vector<int>enemyspawn;
 
 public:
     void paintEvent(QPaintEvent *e);

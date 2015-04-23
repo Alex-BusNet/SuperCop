@@ -300,25 +300,22 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
 
     for(int i=0;i<donuts.size();i++){
 
-        if(5==location%40)
+        if(donutspawn.at(i)==location)
         {
-            int j = location/40;
-            if(j<donuts.size()){
-            (*(donuts.at(j))).setActive(true);
-            }
-        }//spawns a donut every 40 location-units (1 LU = 5 pixels)starting at 5
+            (*(donuts.at(i))).setActive(true);
+        }//spawns a donut at each read location
 
 
         if(true==(*(donuts.at(i))).getActive()){
             (*(donuts.at(i))).drawDonut(painter);
         }
-           if(true==(*(donuts.at(i))).getActive()){
-                if(((*(donuts.at(i))).getPosX() <= player->getPosX()&&(*(donuts.at(i))).getPosX()+45>=player->getPosX())&&(*(donuts.at(i))).getPosY()==player->getPosY()){
-                    (*(donuts.at(i))).setActive(false);
-                    (*(donuts.at(i))).setPosX(-10000);//Donuts may technically be reactivated by going backward, but the player cannot go back past 0, and donuts will spawn waaaay back.
-                    gamescore+=10;
-                }//handles collisions with donut
-            }
+        if(true==(*(donuts.at(i))).getActive()){
+            if(((*(donuts.at(i))).getPosX() <= player->getPosX()&&(*(donuts.at(i))).getPosX()+45>=player->getPosX())&&(*(donuts.at(i))).getPosY()==player->getPosY()){
+                (*(donuts.at(i))).setActive(false);
+                (*(donuts.at(i))).setPosX(-10000);//Donuts may technically be reactivated by going backward, but the player cannot go back past 0, and donuts will spawn waaaay back.
+                gamescore+=10;
+            }//handles collisions with donut
+        }
 
     }//Handles all cases of donut objects.
 
@@ -326,13 +323,10 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
     for(int i=0;i<enemies.size();i++){
 
 
-        if(25==location%40)
+        if(enemyspawn.at(i)==location)
         {
-            int j = location/40;
-            if(j<enemies.size()){
-                (*(enemies.at(j))).setActive(true);
-            }
-        }//spawns an enemy every 40 location-units (1 LU = 5 pixels)starting at 25
+            (*(enemies.at(i))).setActive(true);
+        }//spawns an enemy at each read location
 
         if(true==(*(enemies.at(i))).getActive()){
             (*(enemies.at(i))).setPosX((*(enemies.at(i))).getPosX()-5);
@@ -409,7 +403,7 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
                 setscores.open("../SuperCop/highscores.txt");
 
                 setscores << firstscore << endl;
-               setscores << secondscore << endl;
+                setscores << secondscore << endl;
                 setscores << thirdscore << endl;
                 setscores << fourthscore << endl;
                 setscores << fifthscore << endl;
@@ -423,15 +417,35 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
 
 void SuperCopGame::level1(){
 
-    for(int i=0;i<5;i++){
+    ifstream enemyread;
+    enemyread.open("../SuperCop/level1enemy.txt");
+    int enemynum;
+    if(enemyread.is_open()){
+        while(enemyread>>enemynum){
+            enemyspawn.push_back(enemynum);
+        }
+    }
+
+    for(int i=0;i<enemyspawn.size();i++){
         Enemy *enemy;
         enemy = new Enemy(this);
         enemies.push_back(enemy);
     }
 
-    for(int i=0;i<5;i++){
+    ifstream donutread;
+    donutread.open("../SuperCop/level1donut.txt");
+    int donutnum;
+    if(donutread.is_open()){
+        while(donutread>>donutnum){
+            donutspawn.push_back(donutnum);
+        }
+    }
+
+    for(int i=0;i<donutspawn.size();i++){
         Donut *donut;
         donut= new Donut(this);
         donuts.push_back(donut);
+
+
     }
 }//Initializes vectors
