@@ -1,7 +1,6 @@
 #include "enemy.h"
 #include "supercopgame.h"
 #include <QDebug>
-#include <QTimer>
 
 Enemy::Enemy(QWidget *parent)
 {
@@ -75,7 +74,7 @@ int Enemy::getSizeY()
 bool Enemy::getActive()
 {
     return active;
-}
+}//Mutator
 
 void Enemy::setActive(bool act)
 {

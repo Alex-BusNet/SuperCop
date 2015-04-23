@@ -1,16 +1,16 @@
 #include "donut.h"
 #include "supercopgame.h"
 #include <QDebug>
-#include <QTimer>
 
 Donut::Donut(QWidget *parent)
 {
     windowwidth=parent->width();
-    posX = (parent->width() / 3) + 20;
+    posX = (620);
     posY = parent->height() - 140;
     sizeX = 20;
     sizeY = 20;
     donut = new QPixmap("../SuperCop/Images/Donut/Donut.png");
+    active=false;
 }
 
 Donut::~Donut()
@@ -28,19 +28,6 @@ void Donut::changeImage(QString str)
     delete donut;
     donut = new QPixmap(str);
 }
-
-void Donut::eaten()
-{
-    posX=windowwidth;
-}
-
-void Donut::noteaten()
-{
-    posX=windowwidth;
-}
-
-
-
 
 void Donut::setPosX(int x)
 {
@@ -83,3 +70,12 @@ int Donut::getSizeY()
     return sizeY;
 }//Accessor
 
+bool Donut::getActive()
+{
+    return active;
+}//Mutator
+
+void Donut::setActive(bool act)
+{
+    active=act;
+}//Accessor

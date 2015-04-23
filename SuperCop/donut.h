@@ -4,7 +4,6 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QWidget>
-#include <QTimer>
 #include <QPixmap>
 #include <QKeyEvent>
 
@@ -16,8 +15,6 @@ public:
 
     void drawDonut(QPainter &painter);
     void changeImage(QString str);
-    void eaten();
-    void noteaten();
 
     void setPosX(int x);
     void setPosY(int y);
@@ -29,6 +26,9 @@ public:
     int getSizeX();
     int getSizeY();
 
+    bool getActive();
+    void setActive(bool act);
+
 private:
     int windowwidth;
     int posX;
@@ -36,6 +36,7 @@ private:
     int sizeX;
     int sizeY;
     QPixmap *donut;
+    bool active;
 };
 
 #endif // DONUT_H

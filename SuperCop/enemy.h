@@ -4,10 +4,8 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QWidget>
-#include <QTimer>
 #include <QPixmap>
 #include <QKeyEvent>
-
 
 class Enemy
 {

@@ -45,9 +45,9 @@ SuperCopGame::SuperCopGame(QWidget *parent) :
 
     gamescore=0;
 
-    donut= new Donut(this);
     eventNumber=0;
 
+    location=0;
     this->level1();
 }
 
@@ -57,6 +57,9 @@ SuperCopGame::~SuperCopGame()
     delete timer;
     delete player;
     delete keyTimer;
+
+    enemies.clear();
+    donuts.clear();
 }
 
 
@@ -121,15 +124,25 @@ void SuperCopGame::obstacleMovement()
         lb->setPlatformPosX(lb->getPlatformPosX() - 5);
         lb->setStairPosX(lb->getStairPosX() - 5);
 
-        donut->setPosX(donut->getPosX()-5);
+        for(int i=0;i<donuts.size();i++){
+            if(true==(*(donuts.at(i))).getActive()){
+                (*(donuts.at(i))).setPosX((*(donuts.at(i))).getPosX()-5);
+            }
+        }
+        location++;
     }
 
-    if((-1 == player->getPlayerDirection()) && (player->getPosX() <= player->getLeftBound()))
+    if((-1 == player->getPlayerDirection()) && (player->getPosX() <= player->getLeftBound())&&0<location)
     {
         lb->setPlatformPosX(lb->getPlatformPosX() + 5);
         lb->setStairPosX(lb->getStairPosX() + 5);
 
-        donut->setPosX(donut->getPosX()+5);
+        for(int i=0;i<donuts.size();i++){
+            if(true==(*(donuts.at(i))).getActive()){
+                (*(donuts.at(i))).setPosX((*(donuts.at(i))).getPosX()+5);
+            }
+        }
+        location--;
     }
 }
 
@@ -228,7 +241,6 @@ void SuperCopGame::physics()
     //    }
 }
 
-
 int SuperCopGame::getPlatformX()
 {
     return lb->getPlatformPosX();
@@ -285,28 +297,46 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
     painter.setPen(pen);
     painter.drawText(10, 10, QString("Frame: %1").arg(QString::number(player->getFrame())));
     painter.drawText(10, 20, QString("LastKeyPress: %1").arg(QString::number(lastKeyPress)));
+    painter.drawText(10, 30, QString("location: %1").arg(QString::number(location)));
 
 
-    donut->drawDonut(painter);
-    if((donut->getPosX() <= player->getPosX()&&donut->getPosX()+45>=player->getPosX())&&donut->getPosY()==player->getPosY()){
-       donut->eaten();
-       gamescore+=10;
-    }//handles collisions with donut
+    for(int i=0;i<donuts.size();i++){
+        if(1==location)
+        {
+            (*(donuts.at(0))).setActive(true);
+        }//makes Donut's initialization dependant on where in the level the player is-must set for each Donut
+
+        if(75==location)
+        {
+            (*(donuts.at(1))).setActive(true);
+        }
+
+        if(true==(*(donuts.at(i))).getActive()){
+            (*(donuts.at(i))).drawDonut(painter);
+        }
+           if(true==(*(donuts.at(i))).getActive()){
+                if(((*(donuts.at(i))).getPosX() <= player->getPosX()&&(*(donuts.at(i))).getPosX()+45>=player->getPosX())&&(*(donuts.at(i))).getPosY()==player->getPosY()){
+                    (*(donuts.at(i))).setActive(false);
+                    (*(donuts.at(i))).setPosX(-10000);//Donuts may technically be reactivated by going backward, but the player cannot go back past 0, and donuts will spawn waaaay back.
+                    gamescore+=10;
+                }//handles collisions with donut
+            }
+
+    }//Handles all cases of donut objects.
+
 
     for(int i=0;i<enemies.size();i++){
 
 
-        if((1 == player->getPlayerDirection()) && (player->getPosX() + player->getSizeX()) >= player->getRightBound())
+        if(25==location)
         {
             (*(enemies.at(0))).setActive(true);
         }//makes enemy's initialization dependant on where in the level the player is-must set for each enemy
 
-        if((1 == player->getPlayerDirection()) && (player->getPosX() + player->getSizeX()) >= player->getLeftBound()+100)
+        if(150==location)
         {
             (*(enemies.at(1))).setActive(true);
         }
-
-
 
         if(true==(*(enemies.at(i))).getActive()){
             (*(enemies.at(i))).setPosX((*(enemies.at(i))).getPosX()-5);
@@ -315,8 +345,9 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
         //enemy moves based on time, not player-basic AI
 
         if(((*(enemies.at(i))).getPosX() <= player->getPosX()&&(*(enemies.at(i))).getPosX()+35>=player->getPosX())&&(*(enemies.at(i))).getPosY()==player->getPosY()&&true==player->isJumping()){
-            (*(enemies.at(i))).setPosX(-35);
-        }//Kills enemy
+            (*(enemies.at(i))).setActive(false);
+            (*(enemies.at(i))).setPosX(-1000);
+        }//Kills enemy if you jump on it
 
         if(((*(enemies.at(i))).getPosX() <= player->getPosX()&&(*(enemies.at(i))).getPosX()+35>=player->getPosX())&&(*(enemies.at(i))).getPosY()==player->getPosY()&&false==player->isJumping())
         {
@@ -391,7 +422,7 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
                 }//resets high scores if new high score acheived
 
             }
-        }//Handles allcases of enemy objects.
+        }//Handles all cases of enemy objects.
     }
 
 void SuperCopGame::level1(){
@@ -400,4 +431,10 @@ void SuperCopGame::level1(){
     enemies.push_back(enemy);
     enemies.push_back(enemy2);
 
-}//This is the only way I can find to set up enemies so far
+    donut= new Donut(this);
+    donut2=new Donut(this);
+    donuts.push_back(donut);
+    donuts.push_back(donut2);
+
+
+}//This is the only way I can find to set up vectors so far
