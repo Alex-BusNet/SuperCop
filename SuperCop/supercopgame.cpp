@@ -45,8 +45,6 @@ SuperCopGame::SuperCopGame(QWidget *parent) :
 
     gamescore=0;
 
-    eventNumber=0;
-
     location=0;
     this->level1();
 }
@@ -301,15 +299,15 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
 
 
     for(int i=0;i<donuts.size();i++){
-        if(1==location)
-        {
-            (*(donuts.at(0))).setActive(true);
-        }//makes Donut's initialization dependant on where in the level the player is-must set for each Donut
 
-        if(75==location)
+        if(5==location%40)
         {
-            (*(donuts.at(1))).setActive(true);
-        }
+            int j = location/40;
+            if(j<donuts.size()){
+            (*(donuts.at(j))).setActive(true);
+            }
+        }//spawns a donut every 40 location-units (1 LU = 5 pixels)starting at 5
+
 
         if(true==(*(donuts.at(i))).getActive()){
             (*(donuts.at(i))).drawDonut(painter);
@@ -328,15 +326,13 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
     for(int i=0;i<enemies.size();i++){
 
 
-        if(25==location)
+        if(25==location%40)
         {
-            (*(enemies.at(0))).setActive(true);
-        }//makes enemy's initialization dependant on where in the level the player is-must set for each enemy
-
-        if(150==location)
-        {
-            (*(enemies.at(1))).setActive(true);
-        }
+            int j = location/40;
+            if(j<enemies.size()){
+                (*(enemies.at(j))).setActive(true);
+            }
+        }//spawns an enemy every 40 location-units (1 LU = 5 pixels)starting at 25
 
         if(true==(*(enemies.at(i))).getActive()){
             (*(enemies.at(i))).setPosX((*(enemies.at(i))).getPosX()-5);
@@ -351,7 +347,7 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
 
         if(((*(enemies.at(i))).getPosX() <= player->getPosX()&&(*(enemies.at(i))).getPosX()+35>=player->getPosX())&&(*(enemies.at(i))).getPosY()==player->getPosY()&&false==player->isJumping())
         {
-             (*(enemies.at(i))).setPosY(enemy->getPosY()-1);
+             (*(enemies.at(i))).setPosY((*(enemies.at(i))).getPosY()-1);
              timer->stop();
              QMessageBox mbox;
              mbox.setText("Game Over");
@@ -426,15 +422,16 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
     }
 
 void SuperCopGame::level1(){
-    enemy = new Enemy(this);
-    enemy2 = new Enemy(this);
-    enemies.push_back(enemy);
-    enemies.push_back(enemy2);
 
-    donut= new Donut(this);
-    donut2=new Donut(this);
-    donuts.push_back(donut);
-    donuts.push_back(donut2);
+    for(int i=0;i<5;i++){
+        Enemy *enemy;
+        enemy = new Enemy(this);
+        enemies.push_back(enemy);
+    }
 
-
-}//This is the only way I can find to set up vectors so far
+    for(int i=0;i<5;i++){
+        Donut *donut;
+        donut= new Donut(this);
+        donuts.push_back(donut);
+    }
+}//Initializes vectors

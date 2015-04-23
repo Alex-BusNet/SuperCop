@@ -46,15 +46,10 @@ private:
     QWidget* parent;
     int gamescore;
 
-
-    Enemy *enemy;
-    Donut *donut;
-    int eventNumber;
-    vector<Enemy*>enemies;
-    Enemy *enemy2;
-    Donut *donut2;
     int location;
     vector<Donut*>donuts;
+    vector<Enemy*>enemies;
+
 public:
     void paintEvent(QPaintEvent *e);
     explicit SuperCopGame(QWidget *parent = 0);
