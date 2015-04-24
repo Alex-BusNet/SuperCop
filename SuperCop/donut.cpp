@@ -1,3 +1,5 @@
+//Alex Portolese and Sam Stein
+//This file contains the coding to make the Donut item functional.
 #include "donut.h"
 #include "supercopgame.h"
 #include <QDebug>
@@ -11,7 +13,7 @@ Donut::Donut(QWidget *parent)
     sizeY = 20;
     donut = new QPixmap("../SuperCop/Images/Donut/Donut.png");
     active=false;
-}
+}//initializes variables
 
 Donut::~Donut()
 {
@@ -21,13 +23,13 @@ Donut::~Donut()
 void Donut::drawDonut(QPainter &painter)
 {
     painter.drawPixmap(posX, posY, sizeX, sizeY, *donut);
-}
+}//draws the donut object
 
 void Donut::changeImage(QString str)
 {
     delete donut;
     donut = new QPixmap(str);
-}
+}//allows for the donut image to be changed
 
 void Donut::setPosX(int x)
 {

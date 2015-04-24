@@ -74,4 +74,4 @@ void MainWindow::on_Easy_1P_triggered()
         scg->setVecs("level1");
     }
     scg->show();
-}
+}//Creates a 1 player game on easy

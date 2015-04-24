@@ -1,3 +1,5 @@
+//Alex Portolese and Sam Stein
+//This file contains the declarations for the Level floor.
 #ifndef LEVELBASE_H
 #define LEVELBASE_H
 

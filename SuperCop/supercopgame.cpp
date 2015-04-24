@@ -1,3 +1,5 @@
+//Alex Portolese and Sam Stein
+//This file contains the coding to make the classes interact in the game.
 #include "supercopgame.h"
 #include "player.h"
 #include <QGraphicsScene>
@@ -46,7 +48,7 @@ SuperCopGame::SuperCopGame(QWidget *parent) :
     gamescore=0;
 
     location=0;
-}
+}//Initializes game variables
 
 
 SuperCopGame::~SuperCopGame()
@@ -54,17 +56,18 @@ SuperCopGame::~SuperCopGame()
     delete timer;
     delete player;
     delete keyTimer;
-    for(int i=0;i<enemyspawn.size();i++){
+    for(unsigned int i=0;i<enemyspawn.size();i++){
         delete enemies.at(i);
     }
     enemies.clear();
     enemyspawn.clear();
-    for(int i=0;i<donutspawn.size();i++){
+    for(unsigned int i=0;i<donutspawn.size();i++){
         delete donuts.at(i);
     }
     donuts.clear();
     donutspawn.clear();
-}
+    delete levelend;
+}//Destructor
 
 
 void SuperCopGame::keyPressEvent(QKeyEvent *evt)
@@ -86,7 +89,7 @@ void SuperCopGame::keyPressEvent(QKeyEvent *evt)
     default:
         break;
     }
-}
+}//Reads user key presses
 
 
 void SuperCopGame::keyReleaseEvent(QKeyEvent *evt)
@@ -108,18 +111,23 @@ void SuperCopGame::keyReleaseEvent(QKeyEvent *evt)
     default:
         break;
     }
-}
+}//Reads user Key Releases
 
 
 void SuperCopGame::setLastKeyPress(int key)
 {
     this->lastKeyPress = key;
-}
+}//Sets key based on key presses
 
 void SuperCopGame::setPlatformX(int x)
 {
     lb->setPlatformPosX(x);
-}
+}//Sets the location of the platform
+
+int SuperCopGame::getPlatformX()
+{
+    return lb->getPlatformPosX();
+}//Gets platform location
 
 void SuperCopGame::obstacleMovement()
 {
@@ -128,12 +136,13 @@ void SuperCopGame::obstacleMovement()
         lb->setPlatformPosX(lb->getPlatformPosX() - 5);
         lb->setStairPosX(lb->getStairPosX() - 5);
 
-        for(int i=0;i<donuts.size();i++){
+        for(unsigned int i=0;i<donuts.size();i++){
             if(true==(*(donuts.at(i))).getActive()){
                 (*(donuts.at(i))).setPosX((*(donuts.at(i))).getPosX()-5);
             }
         }
         location++;
+        levelend->setPosX(levelend->getPosX()-5);
     }
 
     if((-1 == player->getPlayerDirection()) && (player->getPosX() <= player->getLeftBound())&&0<location)
@@ -141,14 +150,15 @@ void SuperCopGame::obstacleMovement()
         lb->setPlatformPosX(lb->getPlatformPosX() + 5);
         lb->setStairPosX(lb->getStairPosX() + 5);
 
-        for(int i=0;i<donuts.size();i++){
+        for(unsigned int i=0;i<donuts.size();i++){
             if(true==(*(donuts.at(i))).getActive()){
                 (*(donuts.at(i))).setPosX((*(donuts.at(i))).getPosX()+5);
             }
         }
         location--;
+        levelend->setPosX(levelend->getPosX()+5);
     }
-}
+}//Scrolls objects across the screen as necessary
 
 void SuperCopGame::physics()
 {
@@ -243,12 +253,7 @@ void SuperCopGame::physics()
         //        player->setPosX(player->getPosX());
         //        player->setCollided(true);
     //    }
-}
-
-int SuperCopGame::getPlatformX()
-{
-    return lb->getPlatformPosX();
-}
+}//Handles Collisions
 
 void SuperCopGame::pollKey() //DO NOT MODIFY. Code Works now.
 {
@@ -280,7 +285,7 @@ void SuperCopGame::pollKey() //DO NOT MODIFY. Code Works now.
         else
             lastKeyPress = 0;
     }
-}
+}//Checks which key is being pressed, stopps animation loops
 
 void SuperCopGame::updateField()
 {
@@ -288,7 +293,7 @@ void SuperCopGame::updateField()
     obstacleMovement();
     physics();
     this->update();
-}
+}//Updates the painted locations of objects based on a timer
 
 void SuperCopGame::paintEvent(QPaintEvent *e)
 {
@@ -304,7 +309,7 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
     painter.drawText(10, 30, QString("location: %1").arg(QString::number(location)));
 
 
-    for(int i=0;i<donuts.size();i++){
+    for(unsigned int i=0;i<donuts.size();i++){
 
         if(donutspawn.at(i)==location)
         {
@@ -326,7 +331,7 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
     }//Handles all cases of donut objects.
 
 
-    for(int i=0;i<enemies.size();i++){
+    for(unsigned int i=0;i<enemies.size();i++){
 
 
         if(enemyspawn.at(i)==location)
@@ -352,74 +357,25 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
              QMessageBox mbox;
              mbox.setText("Game Over");
              mbox.exec();
-             ifstream scoreset;
-             scoreset.open("../SuperCop/highscores.txt");
-             int scores;
+             this->setHighScores();
+             this->close();
 
-             if(scoreset.is_open()){
+        }//Handles game-ending collisions
+    }//Handles all cases of enemy objects.
 
-                scoreset >> scores;
-                int firstscore = scores;
-                scoreset >> scores;
-                int secondscore = scores;
-                scoreset >> scores;
-                int thirdscore = scores;
-                scoreset >> scores;
-                int fourthscore = scores;
-                scoreset >> scores;
-                int fifthscore = scores;
-                scoreset.close();
+    levelend->drawDonut(painter);
 
-                if(firstscore < gamescore)
-                {
-                      fifthscore = fourthscore;
-                      fourthscore = thirdscore;
-                      thirdscore = secondscore;
-                      secondscore = firstscore;
-                      firstscore = gamescore;
-
-                      QMessageBox sbox;
-                      sbox.setText("New High Score: "+ QString::number(gamescore));
-                      sbox.exec();
-                }
-                else if(secondscore < gamescore)
-                {
-                       fifthscore = fourthscore;
-                       fourthscore = thirdscore;
-                       thirdscore = secondscore;
-                       secondscore = gamescore;
-                }
-                else if(thirdscore < gamescore)
-                {
-                       fifthscore = fourthscore;
-                       fourthscore = thirdscore;
-                       thirdscore = gamescore;
-                }
-                else if(fourthscore < gamescore)
-               {
-                       fifthscore = fourthscore;
-                       fourthscore = gamescore;
-                }
-               else if(fifthscore<gamescore)
-                {
-                       fifthscore = gamescore;
-                }
-
-                ofstream setscores;
-                setscores.open("../SuperCop/highscores.txt");
-
-                setscores << firstscore << endl;
-                setscores << secondscore << endl;
-                setscores << thirdscore << endl;
-                setscores << fourthscore << endl;
-                setscores << fifthscore << endl;
-
-                setscores.close();
-                }//resets high scores if new high score acheived
-
-            }
-        }//Handles all cases of enemy objects.
-    }
+    if( levelend->getPosX() <= player->getPosX()&& levelend->getPosX()+45>=player->getPosX()&& levelend->getPosY()==player->getPosY()){
+        gamescore+=100;
+        timer->stop();
+        player->setPosX(player->getPosX()+1);
+        QMessageBox mbox;
+        mbox.setText("Level Beaten");
+        mbox.exec();
+        this->setHighScores();
+        this->close();
+    }//Handles game-winning
+}//Paints objects and checks for collisions
 
 void SuperCopGame::setVecs(QString level){
 
@@ -436,7 +392,7 @@ void SuperCopGame::setVecs(QString level){
     }
     enemyread.close();
 
-    for(int i=0;i<enemyspawn.size();i++){
+    for(unsigned int i=0;i<enemyspawn.size();i++){
         Enemy *enemy;
         enemy = new Enemy(this);
         enemies.push_back(enemy);
@@ -452,10 +408,83 @@ void SuperCopGame::setVecs(QString level){
     }
     donutread.close();
 
-    for(int i=0;i<donutspawn.size();i++){
+    for(unsigned int i=0;i<donutspawn.size();i++){
         Donut *donut;
         donut= new Donut(this);
         donuts.push_back(donut);
     }
-}//Initializes vectors
+
+    levelend = new Donut(this);
+    levelend->setSizeX(40);
+    levelend->setSizeY(40);
+    levelend->setPosX(2500);
+}//Initializes vectors for Level 1
+
+void SuperCopGame::setHighScores()
+{
+    ifstream scoreset;
+    scoreset.open("../SuperCop/highscores.txt");
+    int scores;
+
+    if(scoreset.is_open()){
+
+       scoreset >> scores;
+       int firstscore = scores;
+       scoreset >> scores;
+       int secondscore = scores;
+       scoreset >> scores;
+       int thirdscore = scores;
+       scoreset >> scores;
+       int fourthscore = scores;
+       scoreset >> scores;
+       int fifthscore = scores;
+       scoreset.close();
+
+       if(firstscore < gamescore)
+       {
+             fifthscore = fourthscore;
+             fourthscore = thirdscore;
+             thirdscore = secondscore;
+             secondscore = firstscore;
+             firstscore = gamescore;
+
+             QMessageBox sbox;
+             sbox.setText("New High Score: "+ QString::number(gamescore));
+             sbox.exec();
+       }
+       else if(secondscore < gamescore)
+       {
+              fifthscore = fourthscore;
+              fourthscore = thirdscore;
+              thirdscore = secondscore;
+              secondscore = gamescore;
+       }
+       else if(thirdscore < gamescore)
+       {
+              fifthscore = fourthscore;
+              fourthscore = thirdscore;
+              thirdscore = gamescore;
+       }
+       else if(fourthscore < gamescore)
+       {
+              fifthscore = fourthscore;
+              fourthscore = gamescore;
+       }
+      else if(fifthscore<gamescore)
+       {
+              fifthscore = gamescore;
+       }
+
+       ofstream setscores;
+       setscores.open("../SuperCop/highscores.txt");
+
+       setscores << firstscore << endl;
+       setscores << secondscore << endl;
+       setscores << thirdscore << endl;
+       setscores << fourthscore << endl;
+       setscores << fifthscore << endl;
+
+       setscores.close();
+       }
+}//resets high scores if new high score acheived
 

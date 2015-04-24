@@ -1,5 +1,6 @@
+//Alex Portolese and Sam Stein
+//This file contains the coding to make the player functional.
 #include "Player.h"
-//#include "player.h"
 #include "supercopgame.h"
 #include <QDebug>
 #include <QKeyEvent>
@@ -27,12 +28,12 @@ Player::Player(QWidget *parent)
     moveRight = false;
     moveLeft = false;
     collided = true;
-}
+}//initializes the player variables
 
 Player::~Player()
 {
     delete image;
-}
+}//Destructor
 
 
 void Player::drawPlayer(QPainter &painter)
@@ -43,14 +44,14 @@ void Player::drawPlayer(QPainter &painter)
     painter.setPen(Qt::red);
     painter.drawLine(rightBound, posY + 43, rightBound, posY - 43);
     painter.drawLine(leftBound, posY + 43, leftBound, posY - 43);
-}
+}//Draws the player
 
 
 void Player::changeImage(QString str)
 {
     delete image;
     image = new QPixmap(str);
-}
+}//Allows the player icon to be changed
 
 
 void Player::playerScreenPos(QWidget *w = 0)
@@ -66,7 +67,7 @@ void Player::playerScreenPos(QWidget *w = 0)
     {
         this->setPosX(this->getPosX() - 10);
     }
-}
+}//Controls whether the screen moves or the player does
 
 
 void Player::playerAction(int action)
@@ -98,7 +99,7 @@ void Player::playerAction(int action)
     }
 
     playerScreenPos();
-}
+}//Calls the various player controlled movement functions
 
 
 void Player::jump()
@@ -153,7 +154,7 @@ void Player::jump()
             standBy();
             this->setPosY(ground);
        }
-}//Player State
+}//Controls Player Jumps
 
 
 void Player::roll()
@@ -207,7 +208,7 @@ void Player::roll()
         standBy();
     }
 
-}//Player State
+}//Controls Player Rolls
 
 
 void Player::run()
@@ -251,7 +252,7 @@ void Player::run()
             changeImage("../SuperCop/Images/Running/Run0_1.png");
         }
     }
-}//Player State
+}//Controls Player Running right
 
 
 void Player::runInverted()
@@ -294,7 +295,7 @@ void Player::runInverted()
             playerDirection = -1;
         }
     }
-}//Player State
+}//Controls Player Running Left
 
 void Player::standBy()
 {
@@ -309,7 +310,7 @@ void Player::standBy()
         changeImage("../SuperCop/Images/Running/Run1_1.png");
         collided = true;
     }
-}
+}//Controls Player Stopped
 
 int Player::getFrame()
 {
@@ -326,19 +327,19 @@ int Player::getLeftBound()
 int Player::getRightBound()
 {
     return rightBound;
-}
+}//Accessor
 
 
 int Player::getPlayerDirection()
 {
     return playerDirection;
-}
+}//Accessor
 
 
 int Player::getGround()
 {
     return ground;
-}
+}//Accessor
 
 
 bool Player::isRolling()
@@ -362,7 +363,7 @@ bool Player::isMoveRight()
 bool Player::isMoveLeft()
 {
     return moveLeft;
-}
+}//Accessor
 
 bool Player::isCollided()
 {
@@ -391,13 +392,13 @@ void Player::setSizeX(int x)
 void Player::setSizeY(int y)
 {
     sizeY=y;
-}
+}//Mutator
 
 
 void Player::setCollided(bool collided)
 {
     this->collided = collided;
-}
+}//Mutator
 
 
 int Player::getPosX()

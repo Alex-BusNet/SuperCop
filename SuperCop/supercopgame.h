@@ -1,3 +1,5 @@
+//Alex Portolese and Sam Stein
+//This file contains the declarations for the Functional game.
 #ifndef SUPERCOPGAME_H
 #define SUPERCOPGAME_H
 
@@ -51,6 +53,7 @@ private:
     vector<Enemy*>enemies;
     vector<int>donutspawn;
     vector<int>enemyspawn;
+    Donut *levelend;
 
 public:
     void paintEvent(QPaintEvent *e);
@@ -64,6 +67,7 @@ public:
     void obstacleMovement();
     void physics();
     void setVecs(QString level);
+    void setHighScores();
 
     int getPlatformX();
 
