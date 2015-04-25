@@ -11,13 +11,13 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>High Scores</string>
   </property>
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>150</x>
-     <y>30</y>
+     <x>170</x>
+     <y>50</y>
      <width>71</width>
      <height>20</height>
     </rect>
@@ -29,7 +29,7 @@
   <widget class="QPushButton" name="reset">
    <property name="geometry">
     <rect>
-     <x>130</x>
+     <x>160</x>
      <y>250</y>
      <width>75</width>
      <height>23</height>
@@ -42,9 +42,9 @@
   <widget class="QWidget" name="horizontalLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>70</x>
+     <x>60</x>
      <y>100</y>
-     <width>221</width>
+     <width>281</width>
      <height>131</height>
     </rect>
    </property>
@@ -54,6 +54,13 @@
     </property>
     <item>
      <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QLabel" name="Placeholder">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
       <item>
        <widget class="QLabel" name="label_2">
         <property name="text">
@@ -94,6 +101,13 @@
     <item>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
+       <widget class="QLabel" name="label_7">
+        <property name="text">
+         <string>Easy</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QLabel" name="Score1_1">
         <property name="text">
          <string>0</string>
@@ -132,6 +146,13 @@
     </item>
     <item>
      <layout class="QVBoxLayout" name="verticalLayout_3">
+      <item>
+       <widget class="QLabel" name="label_8">
+        <property name="text">
+         <string>Medium</string>
+        </property>
+       </widget>
+      </item>
       <item>
        <widget class="QLabel" name="Score2_1">
         <property name="text">
@@ -172,6 +193,13 @@
     <item>
      <layout class="QVBoxLayout" name="verticalLayout_4">
       <item>
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>Hard</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QLabel" name="Score3_1">
         <property name="text">
          <string>0</string>
@@ -209,45 +237,6 @@
      </layout>
     </item>
    </layout>
-  </widget>
-  <widget class="QLabel" name="label_7">
-   <property name="geometry">
-    <rect>
-     <x>140</x>
-     <y>80</y>
-     <width>47</width>
-     <height>13</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Easy</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_8">
-   <property name="geometry">
-    <rect>
-     <x>190</x>
-     <y>80</y>
-     <width>47</width>
-     <height>13</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Medium</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_9">
-   <property name="geometry">
-    <rect>
-     <x>250</x>
-     <y>80</y>
-     <width>47</width>
-     <height>13</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Hard</string>
-   </property>
   </widget>
  </widget>
  <resources/>
