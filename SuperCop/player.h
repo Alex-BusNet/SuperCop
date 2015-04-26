@@ -23,6 +23,7 @@ private:
     int sizeX, sizeY;
 
     int frame;
+    int speedX;
     int leftBound, rightBound;
     int ground;
 
@@ -69,6 +70,8 @@ public:
     bool isMoveRight();
     bool isMoveLeft();
     bool isCollided();
+
+    void setSpeedX(int spd);
 
 public slots:
     void playerAction(int action);
