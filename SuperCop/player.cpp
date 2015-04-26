@@ -71,6 +71,9 @@ void Player::playerScreenPos(QWidget *w = 0)
 
 void Player::playerAction(int action)
 {
+    if(posY==ground){
+        jumping=false;
+    }
     //If the new direction does not match the previous direction, reset the frame counter to zero.
     if(action != lastActionPressed)
     {
@@ -218,7 +221,6 @@ void Player::roll()
         posY += 15;
         if(posY>ground){
             posY=ground;
-            jumping=false;
         }
     }
 }//Controls Player Rolls
@@ -249,7 +251,6 @@ void Player::run()
         }
         if(posY>ground){
             posY=ground;
-            jumping=false;
         }
 //    }
 }//Controls Player Running right
@@ -281,7 +282,6 @@ void Player::runInverted()
         }
         if(posY>ground){
             posY=ground;
-            jumping=false;
         }
 }//Controls Player Running Left
 
@@ -292,7 +292,6 @@ void Player::standBy()
             posY += 15;
             if(posY>ground){
                 posY=ground;
-                jumping=false;
             }
     }
     //Checks which direction the player was moving last then sets the appropiate standing image
