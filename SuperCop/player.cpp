@@ -108,7 +108,7 @@ void Player::jump()
         {
           QString imagePath;
           jumping = true;
-    //    collided = false;
+//        collided = false;
           if(0 < this->getFrame() && 8 > this->getFrame())
           {
               switch(playerDirection)
@@ -168,12 +168,16 @@ void Player::roll()
             switch(playerDirection)
             {
             case WEST:
-                this->setPosX(this->getPosX() - 8);
+                if(posX>this->getLeftBound()){
+                    this->setPosX(this->getPosX() - 8);
+                }
                 imagePath = QString("../SuperCop/Images/Rolling/Roll1_%1.png").arg(QString::number(frame));
                 changeImage(imagePath);
                 break;
             case EAST:
-                this->setPosX(this->getPosX() + 8);
+                if(posX+this->getSizeX()<this->getRightBound()){
+                    this->setPosX(this->getPosX() + 8);
+                }
                 imagePath = QString("../SuperCop/Images/Rolling/Roll0_%1.png").arg(QString::number(frame));
                 changeImage(imagePath);
                 break;
@@ -186,12 +190,16 @@ void Player::roll()
             switch(playerDirection)
             {
             case WEST:
-                this->setPosX(this->getPosX() - 3);
+                if(posX>this->getLeftBound()){
+                    this->setPosX(this->getPosX() - 3);
+                }
                 imagePath = QString("../SuperCop/Images/Rolling/Roll1_%1.png").arg(QString::number(frame));
                 changeImage(imagePath);
                 break;
             case EAST:
-                this->setPosX(this->getPosX() + 3);
+                if(posX+this->getSizeX()<this->getRightBound()){
+                    this->setPosX(this->getPosX() + 3);
+                }
                 imagePath = QString("../SuperCop/Images/Rolling/Roll0_%1.png").arg(QString::number(frame));
                 changeImage(imagePath);
                 break;
@@ -205,34 +213,22 @@ void Player::roll()
         rolling = false;
         standBy();
     }
-
+    if(this->isJumping() && !this->isCollided()&&posY<ground){
+        posY += 15;
+        if(posY>ground){
+            posY=ground;
+        }
+    }
 }//Controls Player Rolls
 
 
 void Player::run()
 {
-    if(this->isJumping() && !this->isCollided())
+    if(this->isJumping() && !this->isCollided()&&posY<ground)
     {
-        if(playerDirection == 1)
-        {
             posY += 15;
-            posX += 1;
-        }
-        else if(playerDirection == -1)
-        {
-            posY += 10;
-            posX -= 1;
-        }
-        else
-        {
-            posY += 15;
-            posX = posX;
-        }
-
     }
-    else
-    {
-        this->setPosY(ground);
+
         frame++;
         QString imagePath = QString("../SuperCop/Images/Running/Run0_%1.png").arg(frame);
 
@@ -249,32 +245,20 @@ void Player::run()
             playerDirection = 1;
             changeImage("../SuperCop/Images/Running/Run0_1.png");
         }
-    }
+        if(posY>ground){
+            posY=ground;
+        }
+//    }
 }//Controls Player Running right
 
 
 void Player::runInverted()
 {
-    if(this->isJumping() && !this->isCollided())
-    {
-        if(playerDirection == 1)
-        {
+    if(this->isJumping() && !this->isCollided()&&posY<ground)
+    {                     
             posY += 15;
-            posX += 1;
-        }
-        else if(playerDirection == -1)
-        {
-            posY += 15;
-            posX -= 1;
-        }
-        else
-        {
-            posY += 15;
-            posX = posX;
-        }
     }
-    else
-    {
+
         frame++;
 
         QString imagePath = QString("../SuperCop/Images/Running/Run1_%1.png").arg(frame);
@@ -292,11 +276,20 @@ void Player::runInverted()
             changeImage("../SuperCop/Images/Running/Run1_1.png");
             playerDirection = -1;
         }
-    }
+        if(posY>ground){
+            posY=ground;
+        }
 }//Controls Player Running Left
 
 void Player::standBy()
 {
+    if(this->isJumping() && !this->isCollided()&&posY<ground)
+    {
+            posY += 15;
+            if(posY>ground){
+                posY=ground;
+            }
+    }
     //Checks which direction the player was moving last then sets the appropiate standing image
     if(1 == playerDirection)
     {
