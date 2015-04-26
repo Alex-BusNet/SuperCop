@@ -26,6 +26,7 @@ Player::Player(QWidget *parent)
     moveRight = false;
     moveLeft = false;
     collided = true;
+    speedX=5;
 }//initializes the player variables
 
 Player::~Player()
@@ -58,12 +59,12 @@ void Player::playerScreenPos(QWidget *w = 0)
     //If on edge of rect, move camera in direction player is running
     if(1 == lastActionPressed && ( this->posX + 25 < rightBound))
     {
-        this->setPosX(this->getPosX() + 10);
+        this->setPosX(this->getPosX() + 5 + speedX);
     }
 
     if (4 == lastActionPressed && (this->posX > leftBound))
     {
-        this->setPosX(this->getPosX() - 10);
+        this->setPosX(this->getPosX() - 5 - speedX);
     }
 }//Controls whether the screen moves or the player does
 
@@ -169,14 +170,14 @@ void Player::roll()
             {
             case WEST:
                 if(posX>this->getLeftBound()){
-                    this->setPosX(this->getPosX() - 8);
+                    this->setPosX(this->getPosX() - speedX - 3);
                 }
                 imagePath = QString("../SuperCop/Images/Rolling/Roll1_%1.png").arg(QString::number(frame));
                 changeImage(imagePath);
                 break;
             case EAST:
                 if(posX+this->getSizeX()<this->getRightBound()){
-                    this->setPosX(this->getPosX() + 8);
+                    this->setPosX(this->getPosX() + speedX + 3);
                 }
                 imagePath = QString("../SuperCop/Images/Rolling/Roll0_%1.png").arg(QString::number(frame));
                 changeImage(imagePath);
@@ -191,14 +192,14 @@ void Player::roll()
             {
             case WEST:
                 if(posX>this->getLeftBound()){
-                    this->setPosX(this->getPosX() - 3);
+                    this->setPosX(this->getPosX() - speedX + 2);
                 }
                 imagePath = QString("../SuperCop/Images/Rolling/Roll1_%1.png").arg(QString::number(frame));
                 changeImage(imagePath);
                 break;
             case EAST:
                 if(posX+this->getSizeX()<this->getRightBound()){
-                    this->setPosX(this->getPosX() + 3);
+                    this->setPosX(this->getPosX() + speedX -2);
                 }
                 imagePath = QString("../SuperCop/Images/Rolling/Roll0_%1.png").arg(QString::number(frame));
                 changeImage(imagePath);
@@ -217,6 +218,7 @@ void Player::roll()
         posY += 15;
         if(posY>ground){
             posY=ground;
+            jumping=false;
         }
     }
 }//Controls Player Rolls
@@ -247,6 +249,7 @@ void Player::run()
         }
         if(posY>ground){
             posY=ground;
+            jumping=false;
         }
 //    }
 }//Controls Player Running right
@@ -278,6 +281,7 @@ void Player::runInverted()
         }
         if(posY>ground){
             posY=ground;
+            jumping=false;
         }
 }//Controls Player Running Left
 
@@ -288,6 +292,7 @@ void Player::standBy()
             posY += 15;
             if(posY>ground){
                 posY=ground;
+                jumping=false;
             }
     }
     //Checks which direction the player was moving last then sets the appropiate standing image
@@ -360,6 +365,11 @@ bool Player::isCollided()
 {
     return collided;
 }//Accessor
+
+void Player::setSpeedX(int spd)
+{
+    speedX=spd;
+}
 
 void Player::setPosX(int x)
 {

@@ -519,4 +519,5 @@ void SuperCopGame::setHighScores()
 void SuperCopGame::setMoveSpeed(int spd)
 {
     movespeed=spd;
+    player->setSpeedX(spd);
 }
