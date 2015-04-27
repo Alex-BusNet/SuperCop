@@ -83,7 +83,7 @@ public:
 //    void setPlatformX(int x);
     void obstacleMovement();
 //    void physics();
-    void setVecs(QString level, int end);
+    void setVecs();
     void setHighScores();
 
     void setMoveSpeed(int spd);

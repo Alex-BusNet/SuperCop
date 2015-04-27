@@ -51,6 +51,7 @@ SuperCopGame::SuperCopGame(QWidget *parent) :
     lastKeyPress = 0;
     gamescore=0;
     location=0;
+    this->setVecs();
 }//Initializes game variables
 
 
@@ -626,11 +627,11 @@ for(unsigned int i = 0; i < enemies.size(); i++)
 }//Handles Painting all elements on screen
 
 
-void SuperCopGame::setVecs(QString level, int end){
-    QString enemyfile("../SuperCop/" + level + "/enemy.txt");
-    QString donutfile("../SuperCop/" + level + "/donut.txt");
-    QString wallFile("../SuperCop/" + level + "/wall.txt");
-    QString platFile("../SuperCop/" + level + "/platform.txt");
+void SuperCopGame::setVecs(){
+    QString enemyfile("../SuperCop/level/enemy.txt");
+    QString donutfile("../SuperCop/level/donut.txt");
+    QString wallFile("../SuperCop/level/wall.txt");
+    QString platFile("../SuperCop/level/platform.txt");
 
     //Enemy Vector initialization
     ifstream enemyread;
@@ -715,7 +716,7 @@ void SuperCopGame::setVecs(QString level, int end){
     levelEnd = new Donut(this);
     levelEnd->setSizeX(40);
     levelEnd->setSizeY(40);
-    levelEnd->setPosX(end);
+    levelEnd->setPosX(6500);
     levelEnd->setPosY(this->height()-200);
 
 
