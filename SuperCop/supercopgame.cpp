@@ -51,6 +51,7 @@ SuperCopGame::SuperCopGame(QWidget *parent) :
     lastKeyPress = 0;
     gamescore=0;
     location=0;
+    this->setVecs();
 }//Initializes game variables
 
 
@@ -219,126 +220,138 @@ void SuperCopGame::obstacleMovement()
 }//Scrolls objects across the screen as necessary
 
 
-void SuperCopGame::physics()
-{
-    QPen pen2;
-    QPen pen3;
-    //Platform Collision Detection
-    for(unsigned int i=0;i<platforms.size();i++){
-        if(((player->getPosX() + 12) >= (*(platforms.at(i))).getPlatformPosX()) && ((player->getPosX() + 12) <= (*(platforms.at(i))).getPlatformEnd()) && (player->getPosY() <= 280))
-        {
-            if(!player->isAscending() && (player->getPosY() >= 280) && (player->getPosY() <= 296))
-            {
-                player->setOnPlatform(true);
-                player->setJumping(false);
-                player->setOnGround(false);
-                player->setOnWall(false);
-                player->setPosY(280);
-                pen2.setColor(Qt::green);
-                pen3.setColor(Qt::red);
-            }
-            else
-            {
-                if(!player->isAscending() && (player->getPosY() >= player->getGround()))
-                {
-                    player->setPosY(player->getGround());
-                    player->setOnGround(true);
-                    player->setJumping(false);
-                    player->setOnPlatform(false);
-                    player->setOnWall(false);
-                    pen2.setColor(Qt::red);
-                    pen3.setColor(Qt::red);
-                }
-                else
-                {
-                    player->setPosY(player->getPosY() + 10);
-                    player->setOnGround(false);
-                    player->setOnWall(false);
-                    player->setOnPlatform(false);
-                    player->setJumping(true);
-                    pen2.setColor(Qt::red);
-                    pen3.setColor(Qt::red);
-                }
-            }
-        }
-    }
-    //Wall Collision Detection
-    for(unsigned int i=0;i<walls.size();i++){
+//void SuperCopGame::physics()
+//{
+//    QPen pen2;
+//    QPen pen3;
+//    //Platform Collision Detection
+//    for(unsigned int i=0;i<platforms.size();i++){
+//        if(((player->getPosX() + 12) >= (*(platforms.at(i))).getPlatformPosX()) && ((player->getPosX() + 12) <= (*(platforms.at(i))).getPlatformEnd()) && (player->getPosY() <= 280))
+//        {
+//            if(!player->isAscending() && (player->getPosY() >= 280) && (player->getPosY() <= 296))
+//            {
+//                player->setOnPlatform(true);
+//                player->setJumping(false);
+//                player->setOnGround(false);
+//                player->setOnWall(false);
+//                player->setPosY(280);
+//                pen2.setColor(Qt::green);
+//                pen3.setColor(Qt::red);
+//            }
+//            else
+//            {
+//                if(!player->isAscending() && (player->getPosY() >= player->getGround()))
+//                {
+//                    player->setPosY(player->getGround());
+//                    player->setOnGround(true);
+//                    player->setJumping(false);
+//                    player->setOnPlatform(false);
+//                    player->setOnWall(false);
+//                    pen2.setColor(Qt::red);
+//                    pen3.setColor(Qt::red);
+//                }
+//                else
+//                {
+//                    player->setPosY(player->getPosY() + 10);
+//                    player->setOnGround(false);
+//                    player->setOnWall(false);
+//                    player->setOnPlatform(false);
+//                    player->setJumping(true);
+//                    pen2.setColor(Qt::red);
+//                    pen3.setColor(Qt::red);
+//                }
+//            }
+//        }
+//    }
+//    //Wall Collision Detection
+//    for(unsigned int i=0;i<walls.size();i++){
 
-//            (*(walls.at(i))).
-        if(((player->getPosX() + 12) >= (*(walls.at(i))).getWallPosX()) && ((player->getPosX() + 12) <= (*(walls.at(i))).getWallPosX() + 50) && (player->getPosY() <= 300))
-        {
-            if(!player->isAscending() && ((player->getPosY() >= 300) && (player->getPosY() <= 310)))
-            {
-                player->setOnWall(true);
-                player->setJumping(false);
-                player->setOnGround(false);
-                player->setOnPlatform(false);
-                player->setPosY(300);
-                pen2.setColor(Qt::red);
-                pen3.setColor(Qt::green);
-            }
-            else
-            {
-                if(!player->isAscending() && (player->getPosY() >= player->getGround()))
-                {
-                    player->setPosY(player->getGround());
-                    player->setOnGround(true);
-                    player->setJumping(false);
-                    player->setOnPlatform(false);
-                    player->setOnWall(false);
-                    pen2.setColor(Qt::red);
-                    pen3.setColor(Qt::red);
-                }
-                else
-                {
-                    player->setPosY(player->getPosY() + 10);
-                    player->setOnGround(false);
-                    player->setOnWall(false);
-                    player->setOnPlatform(false);
-                    player->setJumping(true);
-                    pen2.setColor(Qt::red);
-                    pen3.setColor(Qt::red);
-                }
-            }
-        }
-    }
-    //Ground Collision Detection when player is not on wall or platform
-    if(!player->isOnGround() && !player->isOnPlatform() && !player->isOnWall())
-    {
-        if(!player->isAscending() && (player->getPosY() >= player->getGround()))
-        {
-            player->setPosY(player->getGround());
-            player->setOnGround(true);
-            player->setJumping(false);
-            player->setOnPlatform(false);
-            player->setOnWall(false);
-            pen2.setColor(Qt::red);
-            pen3.setColor(Qt::red);
-        }
-        else
-        {
-            player->setPosY(player->getPosY() + 10);
-            player->setOnGround(false);
-            player->setOnWall(false);
-            player->setOnPlatform(false);
-            player->setJumping(true);
-            pen2.setColor(Qt::red);
-            pen3.setColor(Qt::red);
-        }
-    }
-    //Keep player at ground level
-    else
-    {
-        player->setPosY(player->getGround());
-        player->setOnGround(true);
-        player->setJumping(false);
-        player->setOnWall(false);
-        player->setOnPlatform(false);
-        pen2.setColor(Qt::red);
-        pen3.setColor(Qt::red);
-    }
-}//Handles Collisions
+////            (*(walls.at(i))).
+//        if(((player->getPosX() + 12) >= (*(walls.at(i))).getWallPosX()) && ((player->getPosX() + 12) <= (*(walls.at(i))).getWallPosX() + 50) && (player->getPosY() <= 300))
+//        {
+//            if(!player->isAscending() && ((player->getPosY() >= 300) && (player->getPosY() <= 310)))
+//            {
+//                player->setOnWall(true);
+//                player->setJumping(false);
+//                player->setOnGround(false);
+//                player->setOnPlatform(false);
+//                player->setPosY(300);
+//                pen2.setColor(Qt::red);
+//                pen3.setColor(Qt::green);
+//            }
+//            else
+//            {
+//                if(!player->isAscending() && (player->getPosY() >= player->getGround()))
+//                {
+//                    player->setPosY(player->getGround());
+//                    player->setOnGround(true);
+//                    player->setJumping(false);
+//                    player->setOnPlatform(false);
+//                    player->setOnWall(false);
+//                    pen2.setColor(Qt::red);
+//                    pen3.setColor(Qt::red);
+//                }
+//                else
+//                {
+//                    player->setPosY(player->getPosY() + 10);
+//                    player->setOnGround(false);
+//                    player->setOnWall(false);
+//                    player->setOnPlatform(false);
+//                    player->setJumping(true);
+//                    pen2.setColor(Qt::red);
+//                    pen3.setColor(Qt::red);
+//                }
+//            }
+//        }
+//    }
+//    //Ground Collision Detection when player is not on wall or platform
+//    if(!player->isOnGround() && !player->isOnPlatform() && !player->isOnWall())
+//    {
+//        if(!player->isAscending() && (player->getPosY() >= player->getGround()))
+//        {
+//            player->setPosY(player->getGround());
+//            player->setOnGround(true);
+//            player->setJumping(false);
+//            player->setOnPlatform(false);
+//            player->setOnWall(false);
+//            pen2.setColor(Qt::red);
+//            pen3.setColor(Qt::red);
+//        }
+//        else
+//        {
+//            player->setPosY(player->getPosY() + 10);
+//            player->setOnGround(false);
+//            player->setOnWall(false);
+//            player->setOnPlatform(false);
+//            player->setJumping(true);
+//            pen2.setColor(Qt::red);
+//            pen3.setColor(Qt::red);
+//        }
+//    }
+//    //Keep player at ground level
+//    else
+//    {
+//        player->setPosY(player->getGround());
+//        player->setOnGround(true);
+//        player->setJumping(false);
+//        player->setOnWall(false);
+//        player->setOnPlatform(false);
+//        pen2.setColor(Qt::red);
+//        pen3.setColor(Qt::red);
+//    }
+
+//    for(unsigned int i = 0; i < enemies.size(); i++)
+//    {
+//        for(unsigned int j=0;j<walls.size();j++){
+//            if((((*(enemies.at(i))).getPosX())<=(((*(walls.at(j))).getWallPosX())+((*(walls.at(j))).getWallSizeX())))&&(((*(enemies.at(i))).getPosX())>=(((*(walls.at(j))).getWallPosX()))))
+//            {
+//                qDebug()<<"inside";
+//                (*(enemies.at(i))).setDirection(-1);
+//            }//Enemies turn if they hit a wall
+//        }
+//    }
+
+//}//Handles Collisions
 
 
 void SuperCopGame::pollKey() //DO NOT MODIFY. Code Works now.
@@ -432,7 +445,12 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
 
         if((*(enemies.at(i))).getActive())
         {
-            (*(enemies.at(i))).setPosX((*(enemies.at(i))).getPosX() - moveSpeed - 3);
+            if(1==(*(enemies.at(i))).getDirection()){
+                (*(enemies.at(i))).setPosX((*(enemies.at(i))).getPosX() - moveSpeed - 3);
+            }
+            else if (-1==(*(enemies.at(i))).getDirection()){
+                (*(enemies.at(i))).setPosX((*(enemies.at(i))).getPosX() + moveSpeed + 3);
+            }
             (*(enemies.at(i))).drawEnemy(painter);
         }//enemy moves based on time
 
@@ -548,6 +566,24 @@ for(unsigned int i=0;i<walls.size();i++){
         }
 }
 
+for(unsigned int i = 0; i < enemies.size(); i++)
+{
+    for(unsigned int j=0;j<walls.size();j++){
+
+        wallRect = QRect((*(walls.at(j))).getWallPosX(),(*(walls.at(j))).getWallPosY(),(*(walls.at(j))).getWallSizeX(),(*(walls.at(j))).getWallSizeY());
+        enemyRect = QRect((*(enemies.at(i))).getPosX(),(*(enemies.at(i))).getPosY(),(*(enemies.at(i))).getSizeX(),(*(enemies.at(i))).getSizeY());
+
+        if(enemyRect.intersects(wallRect)&&true==(*(walls.at(j))).getActive())
+        {
+            if(1==(*(enemies.at(i))).getDirection()){
+            (*(enemies.at(i))).setDirection(-1);
+            }
+            else if (-1==(*(enemies.at(i))).getDirection()){
+                (*(enemies.at(i))).setDirection(1);
+            }
+        }//Enemies turn if they hit a wall
+    }
+}
     //===========================================================
     //    END PHYSICS
     //===========================================================
@@ -591,11 +627,11 @@ for(unsigned int i=0;i<walls.size();i++){
 }//Handles Painting all elements on screen
 
 
-void SuperCopGame::setVecs(QString level, int end){
-    QString enemyfile("../SuperCop/" + level + "/enemy.txt");
-    QString donutfile("../SuperCop/" + level + "/donut.txt");
-    QString wallFile("../SuperCop/" + level + "/wall.txt");
-    QString platFile("../SuperCop/" + level + "/platform.txt");
+void SuperCopGame::setVecs(){
+    QString enemyfile("../SuperCop/level/enemy.txt");
+    QString donutfile("../SuperCop/level/donut.txt");
+    QString wallFile("../SuperCop/level/wall.txt");
+    QString platFile("../SuperCop/level/platform.txt");
 
     //Enemy Vector initialization
     ifstream enemyread;
@@ -680,7 +716,7 @@ void SuperCopGame::setVecs(QString level, int end){
     levelEnd = new Donut(this);
     levelEnd->setSizeX(40);
     levelEnd->setSizeY(40);
-    levelEnd->setPosX(end);
+    levelEnd->setPosX(6500);
     levelEnd->setPosY(this->height()-200);
 
 

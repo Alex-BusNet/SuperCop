@@ -82,8 +82,8 @@ public:
     void setLastKeyPress(int keyPress);
 //    void setPlatformX(int x);
     void obstacleMovement();
-    void physics();
-    void setVecs(QString level, int end);
+//    void physics();
+    void setVecs();
     void setHighScores();
 
     void setMoveSpeed(int spd);
