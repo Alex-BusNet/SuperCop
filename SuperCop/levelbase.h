@@ -35,7 +35,7 @@ public:
     void drawLevel(QPainter &painter);
     void drawLevelBase(QPainter &painter);
     void drawStairs(QPainter &painter);
-    void drawLevel();
+//    void drawLevel();
 
     void setStairPosX(int x);
     int getStairPosX();

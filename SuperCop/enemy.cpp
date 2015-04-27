@@ -72,22 +72,22 @@ int Enemy::getSizeX()
 int Enemy::getSizeY()
 {
     return sizeY;
-}
+}//Accessor
 
 bool Enemy::getActive()
 {
     return active;
-}//Mutator
+}//Accessor
 
 void Enemy::setActive(bool act)
 {
     active=act;
-}
+}//Mutator
 
 void Enemy::setDirection(int direc)
 {
     direction=direc;
-}
+}//Mutator
 
 int Enemy::getDirection()
 {

@@ -35,7 +35,7 @@ void LevelBase::drawLevelBase(QPainter &painter)
     painter.fillRect(*rect, brush);
 }//Draws the floor
 
-void LevelBase::drawLevel()
-{
-    //Random Level Generation
-}
+//void LevelBase::drawLevel()
+//{
+//    //Random Level Generation
+//}

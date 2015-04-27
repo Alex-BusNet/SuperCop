@@ -1,3 +1,5 @@
+//Alex Portolese and Sam Stein
+//This file contains the coding to make the platform functional.
 #include "platform.h"
 
 Platform::Platform(QWidget *parent)
@@ -8,12 +10,13 @@ Platform::Platform(QWidget *parent)
     platformPosX = gameWindow +20;
     platformLength = 48;
     active=false;
-}
+}//initializes the platform variables
+
 
 Platform::~Platform()
 {
     delete platform;
-}
+}//Destructor
 
 void Platform::drawPlatform(QPainter &painter)
 {
@@ -22,45 +25,45 @@ void Platform::drawPlatform(QPainter &painter)
     QBrush brush;
     brush.setTexture(*platform);
     painter.fillRect(*rectPlat, brush);
-}
+}//Draws the platform
 
 void Platform::setPlatformPosX(int x)
 {
     this->platformPosX = x;
-}
+}//Mutator
 
 int Platform::getPlatformPosX()
 {
     return platformPosX;
-}
+}//Accessor
 
 int Platform::getPlatformPosY()
 {
     return platformHeight;
-}
+}//Accessor
 
 int Platform::getPlatformEnd()
 {
     return platformPosX + platformLength;
-}
+}//Accessor
 
 int Platform::getPlatformSizeX()
 {
     return platformLength;
-}
+}//Accessor
 
 int Platform::getPlatformSizeY()
 {
     return 16;
-}
+}//Accessor
 
 bool Platform::getActive()
 {
     return active;
-}//Mutator
+}//Accessor
 
 void Platform::setActive(bool act)
 {
     active=act;
-}//Accessor
+}//Mutator
 

@@ -391,27 +391,27 @@ bool Player::isMoveLeft()
 bool Player::isOnGround()
 {
     return onGround;
-}
+}//Accessor
 
 bool Player::isAscending()
 {
     return ascend;
-}
+}//Accessor
 
 bool Player::isOnPlatform()
 {
     return playerOnPlatform;
-}
+}//Accessor
 
 bool Player::isOnWall()
 {
     return playerOnWall;
-}
+}//Accessor
 
 bool Player::isWallCollided()
 {
     return wallCollided;
-}
+}//Accessor
 
 void Player::setSpeedX(int spd)
 {
@@ -461,7 +461,7 @@ void Player::setOnWall(bool onWall)
 void Player::setOnPlatform(bool onPlat)
 {
     this->playerOnPlatform = onPlat;
-}
+}//Accessor
 
 void Player::setWallCollided(bool wallCollided)
 {

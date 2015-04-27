@@ -52,6 +52,12 @@ SuperCopGame::SuperCopGame(QWidget *parent) :
     gamescore=0;
     location=0;
     this->setVecs();
+
+    levelEnd = new Donut(this);
+    levelEnd->setSizeX(40);
+    levelEnd->setSizeY(40);
+    levelEnd->setPosX(6500);
+    levelEnd->setPosY(this->height()-200);
 }//Initializes game variables
 
 
@@ -147,7 +153,7 @@ void SuperCopGame::setLastKeyPress(int key)
 
 //void SuperCopGame::setPlatformX(int x)
 //{
-////    plat->setPlatformPosX(x);
+//    plat->setPlatformPosX(x);
 //}//Sets the location of the platform
 
 
@@ -265,8 +271,6 @@ void SuperCopGame::obstacleMovement()
 //    }
 //    //Wall Collision Detection
 //    for(unsigned int i=0;i<walls.size();i++){
-
-////            (*(walls.at(i))).
 //        if(((player->getPosX() + 12) >= (*(walls.at(i))).getWallPosX()) && ((player->getPosX() + 12) <= (*(walls.at(i))).getWallPosX() + 50) && (player->getPosY() <= 300))
 //        {
 //            if(!player->isAscending() && ((player->getPosY() >= 300) && (player->getPosY() <= 310)))
@@ -624,7 +628,7 @@ for(unsigned int i = 0; i < enemies.size(); i++)
         msg->exec();
     }
 
-}//Handles Painting all elements on screen
+}//Handles Painting all elements on screen and Collisions
 
 
 void SuperCopGame::setVecs(){
@@ -712,14 +716,6 @@ void SuperCopGame::setVecs(){
         plat = new Platform(this);
         platforms.push_back(plat);
     }
-
-    levelEnd = new Donut(this);
-    levelEnd->setSizeX(40);
-    levelEnd->setSizeY(40);
-    levelEnd->setPosX(6500);
-    levelEnd->setPosY(this->height()-200);
-
-
 }//Initializes vectors
 
 
@@ -730,8 +726,8 @@ void SuperCopGame::setHighScores(){
     scoreset.open(filename.toStdString().c_str());
     int scores;
 
-    if(scoreset.is_open()){
-
+    if(scoreset.is_open())
+    {
        scoreset >> scores;
        int firstscore = scores;
        scoreset >> scores;
@@ -775,7 +771,6 @@ void SuperCopGame::setHighScores(){
               fourthscore = gamescore;
        }
        else if(fifthscore<gamescore)
-
        {
               fifthscore = gamescore;
        }
