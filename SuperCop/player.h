@@ -16,6 +16,7 @@ private:
     enum direction {WEST = -1, STAND = 0, EAST = 1};
     bool rolling, jumping, moveLeft, moveRight, ascend, upPressed;
     bool onGround, playerOnWall, playerOnPlatform, wallCollided;
+    int rectPosX, rectPosY, rectSizeX, rectSizeY;
     int posX, posY;
     int sizeX, sizeY;
     int frame;
@@ -52,6 +53,8 @@ public:
     void setOnPlatform(bool onPlat);
     void setWallCollided(bool wallCollided);
     void setSpeedX(int spd);
+    void setRectPosX(int x);
+    void setRectPosY(int y);
 
     int getPosX();
     int getPosY();
@@ -63,6 +66,10 @@ public:
     int getPlayerDirection();
     int getGround();
     int getSpeedY();
+    int getRectPosX();
+    int getRectPosY();
+    int getRectSizeX();
+    int getRectSizeY();
 
     bool isRolling();
     bool isJumping();

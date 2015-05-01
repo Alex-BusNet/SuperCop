@@ -15,6 +15,11 @@ Player::Player(QWidget *parent)
     playerDirection = 1;
     speedX = 5;
 
+    rectPosX = 132;
+    rectPosY = parent->height() - 140;
+    rectSizeX = 18;
+    rectSizeY = 43;
+
     leftBound = parent->width() / 5;
     rightBound = parent->width() - (parent->width() / 3);
     ground = parent->height() - 140;
@@ -58,14 +63,17 @@ void Player::playerScreenPos()
     if(1 == lastActionPressed && (this->posX + 25 < rightBound) && !wallCollided)
     {
         this->setPosX(this->getPosX() + speedX + 5);
+        this->setRectPosX(this->getRectPosX() + speedX + 5);
     }
     else if(4 == lastActionPressed && (this->posX > leftBound) && !wallCollided)
     {
         this->setPosX(this->getPosX() - speedX - 5);
+        this->setRectPosX(this->getRectPosX() - speedX - 5);
     }
     else
     {
         this->setPosX(this->getPosX());
+        this->setRectPosX(this->getRectPosX());
     }
 }//Controls whether the screen moves or the player does
 
@@ -123,11 +131,13 @@ void Player::jump()
                 imagePath = QString("../SuperCop/Images/Running/Run1_1.png");
                 changeImage(imagePath);
                 posY -= 30;
+                rectPosY -= 30;
                 break;
             case EAST:
                 imagePath = QString("../SuperCop/Images/Running/Run0_1.png");
                 changeImage(imagePath);
                 posY -= 30;
+                rectPosY -= 30;
                 break;
             case STAND:
                 break;
@@ -356,6 +366,26 @@ int Player::getPlayerDirection()
 int Player::getGround()
 {
     return ground;
+}
+
+int Player::getRectPosX()
+{
+    return rectPosX;
+}
+
+int Player::getRectPosY()
+{
+    return rectPosY;
+}
+
+int Player::getRectSizeX()
+{
+    return rectSizeX;
+}
+
+int Player::getRectSizeY()
+{
+    return rectSizeY;
 }//Accessor
 
 
@@ -410,6 +440,16 @@ bool Player::isWallCollided()
 void Player::setSpeedX(int spd)
 {
     speedX=spd;
+}
+
+void Player::setRectPosX(int x)
+{
+    this->rectPosX = x;
+}
+
+void Player::setRectPosY(int y)
+{
+    this->rectPosY = y;
 }//Accessor
 
 void Player::setPosX(int x)

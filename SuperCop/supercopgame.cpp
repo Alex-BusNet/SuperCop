@@ -326,7 +326,7 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
     //    START PHYSICS
     //===========================================================
     QRect enemyRect, playerRect, donutRect, levelEndRect, platRect, wallRect;
-    playerRect = QRect(player->getPosX(),player->getPosY(),player->getSizeX(),player->getSizeY());
+    playerRect = QRect(player->getRectPosX(), player->getRectPosY(), player->getRectSizeX(), player->getRectSizeY()); //QRect(player->getPosX(),player->getPosY(),player->getSizeX(),player->getSizeY());
 
     for(unsigned int i = 0; i < donuts.size(); i++)
     {
@@ -426,6 +426,7 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
         if(playerRect.intersects(platRect) && (player->getPosY() < 315) && !player->isAscending())
         {
             player->setPosY(270);
+            player->setRectPosY(270);
             player->setJumping(false);
             player->setOnPlatform(true);
             player->setOnWall(false);
@@ -436,6 +437,7 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
     if(playerRect.intersects(platRect) && (player->getPosY() < 315) && !player->isAscending())
     {
         player->setPosY(270);
+        player->setRectPosY(270);
         player->setJumping(false);
         player->setOnPlatform(true);
         player->setOnWall(false);
@@ -468,6 +470,7 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
     if((player->getPosY() >= player->getGround()) && !player->isAscending() && !player->isOnWall() && !player->isOnPlatform())
     {
         player->setPosY(player->getGround());
+        player->setRectPosY(player->getGround());
         player->setJumping(false);
         player->setOnPlatform(false);
         player->setOnWall(false);
@@ -476,6 +479,7 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
     else
     {
         player->setPosY(player->getPosY() + 10);
+        player->setRectPosY(player->getRectPosY() + 10);
         //        player->setJumping(true);
         player->setOnPlatform(false);
         player->setOnWall(false);
@@ -488,7 +492,7 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
 
         if((player->getPosY() + 40 > (*(walls.at(i))).getWallPosY()) && (playerRect.intersects(wallRect)) && (1 == player->getPlayerDirection()))
         {
-            player->setPosX((*(walls.at(i))).getWallPosX() - player->getSizeX() );
+            player->setPosX((*(walls.at(i))).getWallPosX() - player->getSizeX());
             player->setWallCollided(true);
         }//Checks for player colliding with the left side of a wall
         else if((player->getPosY() + 40 > (*(walls.at(i))).getWallPosY()) && (playerRect.intersects(wallRect)) && (-1 == player->getPlayerDirection()))
@@ -512,6 +516,11 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
     painter.setPen(pen);
     painter.setFont(*scoreFont);
     painter.drawText(10, 30, QString("Score: %1").arg(QString::number(gamescore)));
+
+    QPen debugPen;
+    debugPen.setColor(Qt::red);
+    painter.setPen(debugPen);
+    painter.drawRect(playerRect);
 
     levelEnd->drawDonut(painter);
     levelEndRect = QRect(levelEnd->getPosX(),levelEnd->getPosY(),levelEnd->getSizeX(),levelEnd->getSizeY());
