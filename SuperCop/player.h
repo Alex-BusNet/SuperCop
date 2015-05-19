@@ -3,18 +3,19 @@
 #ifndef Player_H
 #define Player_H
 
+#include <QLabel>
 #include <QPainter>
 #include <QPixmap>
 #include <QWidget>
-
+#include <QRect>
 
 class Player : QObject
 {
 
 private:
-    enum keyPressed {NONE = 0, RIGHT = 1, UP = 2, DOWN = 3, LEFT = 4};
+    enum keyPressed {NONE = 0, RIGHT = 1, UP = 2, DOWN = 3, LEFT = 4, PAUSE = 5};
     enum direction {WEST = -1, STAND = 0, EAST = 1};
-    bool rolling, jumping, moveLeft, moveRight, ascend, upPressed;
+    bool rolling, jumping, moveLeft, moveRight, ascend, upPressed, pause;
     bool onGround, playerOnWall, playerOnPlatform, wallCollided;
     int rectPosX, rectPosY, rectSizeX, rectSizeY;
     int posX, posY;
@@ -25,7 +26,6 @@ private:
     int lastActionPressed;
     int playerDirection;
     QPixmap *image;
-
 public:
 
     Player(QWidget *parent);

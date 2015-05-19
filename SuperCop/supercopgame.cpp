@@ -12,6 +12,7 @@
 #include <fstream>
 #include <vector>
 #include <donut.h>
+#include <QTime>
 
 using namespace std;
 
@@ -26,6 +27,9 @@ SuperCopGame::SuperCopGame(QWidget *parent) :
 
     scoreFont = new QFont(this->font());
     scoreFont->setPointSize(24);
+
+    pausedFont = new QFont(this->font());
+    pausedFont->setPointSize(48);
 
     QPixmap bkgnd("../SuperCop/Images/background.png");
     bkgnd = bkgnd.scaled(this->size(), Qt::IgnoreAspectRatio);
@@ -47,6 +51,7 @@ SuperCopGame::SuperCopGame(QWidget *parent) :
     isDownPressed = false;
     isLeftPressed = false;
     isRightPressed = false;
+    gamePaused = false;
     lastKeyPress = 0;
     gamescore=0;
     location=0;
@@ -54,6 +59,30 @@ SuperCopGame::SuperCopGame(QWidget *parent) :
     //Initializes all Vector Elements;
     this->setVecs();
 
+    showDevOpts = false;
+    resume = new QPushButton("RESUME");
+    resume->hide();
+    connect(resume, SIGNAL(clicked()), this, SLOT(resumeGame()));
+    exit = new QPushButton("EXIT");
+    exit->hide();
+    connect(exit, SIGNAL(clicked()), this, SLOT(exitGame()));
+    paused = new QLabel("PAUSED");
+    paused->setFont(*pausedFont);
+    paused->hide();
+
+    hLayout = new QHBoxLayout();
+    hLayout2 = new QHBoxLayout();
+    vLayout = new QVBoxLayout();
+
+    hLayout->addWidget(resume);
+    hLayout->addWidget(exit);
+    hLayout2->addSpacing(this->width() / 3);
+    hLayout2->addWidget(paused);
+    hLayout2->addSpacing(this->width() / 4);
+    vLayout->addLayout(hLayout2);
+    vLayout->addLayout(hLayout);
+
+    setLayout(vLayout);
 
 }//Initializes game variables
 
@@ -124,9 +153,20 @@ void SuperCopGame::keyPressEvent(QKeyEvent *evt)
         isLeftPressed = true;
         break;
     case Qt::Key_Escape:
-        pbox->setText("PAUSED");
-        pbox->show();
-        pbox->exec();
+        if(!gamePaused)
+        {
+            gamePaused = true;
+            resume->show();
+            exit->show();
+            paused->show();
+        }
+        else
+        {
+            gamePaused = false;
+            resume->hide();
+            exit->hide();
+            paused->hide();
+        }
         break;
     default:
         break;
@@ -290,7 +330,7 @@ void SuperCopGame::pollKey() //DO NOT MODIFY
     else
     {
         //Checks if none of the keys are pressed before checking if some of the keys are pressed.
-        if(!isUpPressed && !isDownPressed && !isLeftPressed && !isRightPressed)
+        if(!isUpPressed && !isDownPressed && !isLeftPressed && !isRightPressed && !gamePaused)
         {
             if(3 == lastKeyPress && player->isRolling())
                 lastKeyPress = 3;
@@ -311,10 +351,27 @@ void SuperCopGame::pollKey() //DO NOT MODIFY
 
 void SuperCopGame::updateField()
 {
-    player->playerAction(lastKeyPress);
-    obstacleMovement();
+    if(!gamePaused)
+    {
+        player->playerAction(lastKeyPress);
+        obstacleMovement();
+    }
     this->update();
 }//Updates the painted locations of objects based on a timer
+
+void SuperCopGame::resumeGame()
+{
+    resume->hide();
+    exit->hide();
+    paused->hide();
+    gamePaused = false;
+}
+
+void SuperCopGame::exitGame()
+{
+    this->close();
+}
+
 
 void SuperCopGame::paintEvent(QPaintEvent *e)
 {
@@ -326,7 +383,8 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
     //    START PHYSICS
     //===========================================================
     QRect enemyRect, playerRect, donutRect, levelEndRect, platRect, wallRect;
-    playerRect = QRect(player->getRectPosX(), player->getRectPosY(), player->getRectSizeX(), player->getRectSizeY()); //QRect(player->getPosX(),player->getPosY(),player->getSizeX(),player->getSizeY());
+    playerRect = QRect(player->getRectPosX(),player->getRectPosY(),player->getRectSizeX(),player->getRectSizeY());
+
 
     for(unsigned int i = 0; i < donuts.size(); i++)
     {
@@ -355,6 +413,8 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
                 (*(donuts.at(i))).setActive(false);
             }
         }//Donuts don't spawn in walls
+
+
     }//Handles all cases of donut objects.
 
     for(unsigned int i = 0; i < enemies.size(); i++)
@@ -391,6 +451,8 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
             this->setHighScores();
             this->close();
         }//Handles game-ending collisions
+
+
     }//Handles all cases of enemy objects.
 
     for(unsigned int i = 0; i < walls.size(); i++)
@@ -405,7 +467,9 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
         if((*walls.at(i)).isActive())
         {
             (*(walls.at(i))).drawWall(painter);
+
         }//Controls whether wall is drawn on screen
+
 
     }//Handles all wall objects
 
@@ -421,7 +485,8 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
         if((*platforms.at(i)).isActive())
         {
             (*(platforms.at(i))).drawPlatform(painter);
-        }//Controls whether wall is drawn on screen
+
+        }//Controls whether platform is drawn on screen
 
         if(playerRect.intersects(platRect) && (player->getPosY() < 315) && !player->isAscending())
         {
@@ -432,6 +497,8 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
             player->setOnWall(false);
             player->setOnGround(false);
         }
+
+
     }//handles all platform objects
 
     if(playerRect.intersects(platRect) && (player->getPosY() < 315) && !player->isAscending())
@@ -460,6 +527,7 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
         if(playerRect.intersects(wallRect) && (player->getPosY() < 340) && !player->isAscending())
         {
             player->setPosY(290);
+            player->setRectPosY(290);
             player->setJumping(false);
             player->setOnPlatform(false);
             player->setOnWall(true);
@@ -493,11 +561,13 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
         if((player->getPosY() + 40 > (*(walls.at(i))).getWallPosY()) && (playerRect.intersects(wallRect)) && (1 == player->getPlayerDirection()))
         {
             player->setPosX((*(walls.at(i))).getWallPosX() - player->getSizeX());
+            player->setRectPosX((*(walls.at(i))).getWallPosX() - player->getSizeX());
             player->setWallCollided(true);
         }//Checks for player colliding with the left side of a wall
         else if((player->getPosY() + 40 > (*(walls.at(i))).getWallPosY()) && (playerRect.intersects(wallRect)) && (-1 == player->getPlayerDirection()))
         {
             player->setPosX((*(walls.at(i))).getWallPosX()+(*(walls.at(i))).getWallSizeX());
+            player->setRectPosX((*(walls.at(i))).getWallPosX()+(*(walls.at(i))).getWallSizeX() + (player->getSizeX() - player->getRectSizeX()));
             player->setWallCollided(true);
         }//Checks for player colliding with the left side of a wall
         else
@@ -510,17 +580,10 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
     //    END PHYSICS
     //===========================================================
 
-    //START DEBUG ITEMS
-
     QPen pen = QPen(Qt::white);
     painter.setPen(pen);
     painter.setFont(*scoreFont);
     painter.drawText(10, 30, QString("Score: %1").arg(QString::number(gamescore)));
-
-    QPen debugPen;
-    debugPen.setColor(Qt::red);
-    painter.setPen(debugPen);
-    painter.drawRect(playerRect);
 
     levelEnd->drawDonut(painter);
     levelEndRect = QRect(levelEnd->getPosX(),levelEnd->getPosY(),levelEnd->getSizeX(),levelEnd->getSizeY());
@@ -537,6 +600,18 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
         }
     }//Handles game winning scenario
 
+    if(showDevOpts)
+    {
+        QPainter devPaint(this);
+        //PlayerRect Outline
+        QPen debugPen;
+        debugPen.setColor(Qt::red);
+        devPaint.setPen(debugPen);
+        devPaint.drawRect(playerRect);
+
+        //Game input info
+        devPaint.drawText(10, 60, QString("lastActionPressed: %1").arg(QString::number(lastKeyPress)));
+    }
 }//Handles Painting all elements on screen
 
 
@@ -708,4 +783,9 @@ void SuperCopGame::setMoveSpeed(int spd)
 {
     moveSpeed = spd;
     player->setSpeedX(spd);
-}//set movement speed;
+}//Sets movement speed
+
+void SuperCopGame::setShowDevOpts(bool devOpts)
+{
+    this->showDevOpts = devOpts;
+}//Enables the developer options.

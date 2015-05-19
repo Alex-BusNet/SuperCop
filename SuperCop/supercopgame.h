@@ -19,6 +19,9 @@
 #include <enemy.h>
 #include <donut.h>
 #include <vector>
+#include <QElapsedTimer>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 using namespace std;
 
 namespace Ui {
@@ -33,7 +36,7 @@ class SuperCopGame : public QWidget
 private:
     Ui::SuperCopGame *ui;
 
-    enum keyPressed {NONE = 0, RIGHT = 1, UP = 2, DOWN = 3, LEFT = 4};
+    enum keyPressed {NONE = 0, RIGHT = 1, UP = 2, DOWN = 3, LEFT = 4, PAUSE = 5};
 
     Player *player;
     LevelBase *lb;
@@ -44,13 +47,14 @@ private:
     QMessageBox *msg;
     QMessageBox *pbox;
     QFont *scoreFont;
+    QFont *pausedFont;
     int picX,picY;
     int picHeight, picWidth;
     int lastKeyPress;
     int gamescore;
     int location;
 
-    bool isUpPressed, isDownPressed, isLeftPressed, isRightPressed;
+    bool isUpPressed, isDownPressed, isLeftPressed, isRightPressed, gamePaused, showDevOpts;
 
     vector<Wall*>walls;
     vector<Platform*>platforms;
@@ -64,6 +68,12 @@ private:
     Donut *levelEnd;
     int moveSpeed;
 
+    QPushButton *resume;
+    QPushButton *exit;
+    QLabel *paused;
+    QHBoxLayout *hLayout;
+    QHBoxLayout *hLayout2;
+    QVBoxLayout *vLayout;
 public:
     void paintEvent(QPaintEvent *e);
     explicit SuperCopGame(QWidget *parent = 0);
@@ -76,12 +86,15 @@ public:
     void setVecs();
     void setHighScores();
     void setMoveSpeed(int spd);
-
+    void setShowDevOpts(bool devOpts);
 signals:
 
 public slots:
     void pollKey();
     void updateField();
+    void resumeGame();
+    void exitGame();
+
 };
 
 #endif // SUPERCOPGAME_H

@@ -115,6 +115,8 @@
     </property>
     <addaction name="actionControls"/>
     <addaction name="actionContact_Us"/>
+    <addaction name="separator"/>
+    <addaction name="actionShow_DevStats"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuCredits"/>
@@ -177,6 +179,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+H</string>
+   </property>
+  </action>
+  <action name="actionShow_DevStats">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show DevStats</string>
    </property>
   </action>
  </widget>
