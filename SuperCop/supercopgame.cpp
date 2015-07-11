@@ -533,7 +533,7 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
             player->setOnWall(true);
             player->setOnGround(false);
         }
-    }//Wall Collison handler
+    }//Wall Collision handler
 
     if((player->getPosY() >= player->getGround()) && !player->isAscending() && !player->isOnWall() && !player->isOnPlatform())
     {

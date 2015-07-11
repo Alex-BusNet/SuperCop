@@ -17,13 +17,13 @@ Enemy::Enemy(QWidget *parent)
 
 Enemy::~Enemy()
 {
-    delete robot;
+    delete robot; 
 
 }//Destructor
 
 void Enemy::drawEnemy(QPainter &painter)
 {
-    painter.drawPixmap(posX, posY, sizeX, sizeY, *robot);
+    painter.drawPixmap(posX, posY, sizeX, sizeY, *robot); 
 }//Draws the enemy image
 
 void Enemy::changeImage(QString str)
