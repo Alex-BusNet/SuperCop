@@ -14,3 +14,8 @@ Controls::~Controls()
 {
     delete ui;
 }//clears potential memory leaks
+
+void Controls::on_toolButton_clicked()
+{
+
+}

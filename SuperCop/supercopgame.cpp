@@ -31,6 +31,15 @@ SuperCopGame::SuperCopGame(QWidget *parent) :
     pausedFont = new QFont(this->font());
     pausedFont->setPointSize(48);
 
+    isUpPressed = false;
+    isDownPressed = false;
+    isLeftPressed = false;
+    isRightPressed = false;
+    gamePaused = false;
+    lastKeyPress = 0;
+    gamescore=0;
+    location=0;
+
     QPixmap bkgnd("../SuperCop/Images/background.png");
     bkgnd = bkgnd.scaled(this->size(), Qt::IgnoreAspectRatio);
     QPalette palette;
@@ -47,14 +56,6 @@ SuperCopGame::SuperCopGame(QWidget *parent) :
     connect(keyTimer, SIGNAL(timeout()), this, SLOT(pollKey()));
     keyTimer->start();
 
-    isUpPressed = false;
-    isDownPressed = false;
-    isLeftPressed = false;
-    isRightPressed = false;
-    gamePaused = false;
-    lastKeyPress = 0;
-    gamescore=0;
-    location=0;
 
     //Initializes all Vector Elements;
     this->setVecs();
@@ -351,11 +352,8 @@ void SuperCopGame::pollKey() //DO NOT MODIFY
 
 void SuperCopGame::updateField()
 {
-    if(!gamePaused)
-    {
-        player->playerAction(lastKeyPress);
-        obstacleMovement();
-    }
+    player->playerAction(lastKeyPress);
+    obstacleMovement();
     this->update();
 }//Updates the painted locations of objects based on a timer
 
@@ -442,7 +440,7 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
             (*(enemies.at(i))).setPosX(-100);
         }//Kills enemy if you jump on it
 
-        if(playerRect.intersects(enemyRect) && (player->isOnGround() || player->isAscending()))
+        if(playerRect.intersects(enemyRect) && (player->isOnGround()))
         {
             (*(enemies.at(i))).setPosY((*(enemies.at(i))).getPosY() - 1);
             timer->stop();
@@ -611,6 +609,7 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
 
         //Game input info
         devPaint.drawText(10, 60, QString("lastActionPressed: %1").arg(QString::number(lastKeyPress)));
+        devPaint.drawText(10, 70, QString("Paused: %1").arg(gamePaused));
     }
 }//Handles Painting all elements on screen
 
