@@ -10,7 +10,7 @@ Donut::Donut(QWidget *parent)
     posY = parent->height() - 140;
     sizeX = 20;
     sizeY = 20;
-    donut = new QPixmap("../SuperCop/Images/Donut/Donut.png");
+    donut = new QPixmap("Images/Donut/Donut.png");
     active=false;
 }//initializes variables
 

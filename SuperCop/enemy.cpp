@@ -6,24 +6,24 @@
 Enemy::Enemy(QWidget *parent)
 {
 
-    posX = parent->width() ;
-    posY = parent->height() - 140;
-    sizeX = 40;
-    sizeY = 40;
-    robot = new QPixmap("../SuperCop/Images/Enemy/enemy0.png");
-    active=false;
-    direction=0;
+    posX = parent->width() ;//spawns at left edge
+    posY = parent->height() - 140;//spawns at platform height
+    sizeX = 40;//width of enemy(image)
+    sizeY = 40;//height of enemy(image)
+    robot = new QPixmap("Images/Enemy/enemy0.png");
+    active=false;//doesnt spawn until triggered
+    direction=0;//goes left by default
 }//initializes the enemy variables
 
 Enemy::~Enemy()
 {
-    delete robot; 
+    delete robot;
 
 }//Destructor
 
 void Enemy::drawEnemy(QPainter &painter)
 {
-    painter.drawPixmap(posX, posY, sizeX, sizeY, *robot); 
+    painter.drawPixmap(posX, posY, sizeX, sizeY, *robot);
 }//Draws the enemy image
 
 void Enemy::changeImage(QString str)
@@ -89,10 +89,10 @@ void Enemy::setDirection(int direc)
     switch(direction)
     {
     case RIGHT:
-        changeImage("../SuperCop/Images/Enemy/enemy1.png");
+        changeImage("Images/Enemy/enemy1.png");
         break;
     case LEFT:
-        changeImage("../SuperCop/Images/Enemy/enemy0.png");
+        changeImage("Images/Enemy/enemy0.png");
         break;
     }
 }//Mutator

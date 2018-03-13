@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui quick declarative
+QT       += core gui quick
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -42,5 +42,3 @@ FORMS    += mainwindow.ui \
     contactus.ui \
     highscores.ui \
     supercopgame.ui
-
-DISTFILES +=

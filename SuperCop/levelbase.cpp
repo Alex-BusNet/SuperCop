@@ -5,10 +5,10 @@
 
 LevelBase::LevelBase(QWidget *parent)
 {
-    floor = new QPixmap("../SuperCop/Images/Wall/0.png");
+    floor = new QPixmap("Images/Wall/road.png");
     floorStart = parent->height() - 100;
-    picX = 16;
-    picY = 16;
+    picX = 133;//doesnt do anything?
+    picY = 32;//doesnt do anything?
     floorLength = parent->width() / 28.0;
     gameWindow = parent->width();
 
@@ -25,7 +25,7 @@ LevelBase::~LevelBase()
 
 void LevelBase::drawLevelBase(QPainter &painter)
 {
-    rect = new QRect(0, floorStart, gameWindow, 32);
+    rect = new QRect(0, floorStart, gameWindow, 40);
     painter.drawRect(*rect);
     QBrush brush;
     brush.setTexture(*floor);

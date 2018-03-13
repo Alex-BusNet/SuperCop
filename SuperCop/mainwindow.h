@@ -45,16 +45,12 @@ private slots:
 
     void on_exit_clicked();
 
-    void on_actionShow_DevStats_triggered();
-
 private:
     Ui::MainWindow *ui;
     ContactUs* contact;
     Controls* controls;
     HighScores* hScore;
     SuperCopGame *scg;
-
-    bool showDev;
 };
 
 #endif // MAINWINDOW_H

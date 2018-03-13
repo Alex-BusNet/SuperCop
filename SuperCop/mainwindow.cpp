@@ -10,7 +10,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    QPixmap bkgnd("../SuperCop/Images/SuperCop.png");
+    QPixmap bkgnd("images/SuperCop.png");
     bkgnd = bkgnd.scaled(this->size(), Qt::IgnoreAspectRatio);
     QPalette palette;
     palette.setBrush(QPalette::Background, bkgnd);
@@ -19,7 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
     controls = NULL;
     hScore = NULL;
     scg = NULL;
-    showDev = false;
+
 
 }//Sets the background image for the main menu
 
@@ -78,11 +78,6 @@ void MainWindow::on_Easy_1P_triggered()
         scg->setMoveSpeed(5);
     }
     scg->show();
-
-    if(showDev)
-    {
-        scg->setShowDevOpts(showDev);
-    }
 }//Creates a 1 player game on easy
 
 void MainWindow::on_Medium_1P_triggered()
@@ -137,9 +132,4 @@ void MainWindow::on_highscores_clicked()
 void MainWindow::on_exit_clicked()
 {
     on_actionExit_triggered();
-}
-
-void MainWindow::on_actionShow_DevStats_triggered()
-{
-    showDev = true;
 }

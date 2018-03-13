@@ -12,11 +12,12 @@ private:
     QRect *rectWall;
     int picX, picY;
     int gameWindow;
+    //int xspawn;
     int wallPosX, wallPosY;
     bool  active;
 
 public:
-    Wall(QWidget *parent);
+    Wall(QWidget *parent, int xspawn);
     ~Wall();
 
     void drawWall(QPainter &painter);

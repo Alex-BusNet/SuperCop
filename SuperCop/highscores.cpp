@@ -11,7 +11,7 @@ HighScores::HighScores(QWidget *parent) :
 {
     ui->setupUi(this);
     ifstream scoreset;
-    scoreset.open("../SuperCop/highscores1.txt");
+    scoreset.open("highscores1.txt");
     int scores;
     if(scoreset.is_open()){
         scoreset>>scores;
@@ -27,7 +27,7 @@ HighScores::HighScores(QWidget *parent) :
     }//reads current high scores
     scoreset.close();
 
-    scoreset.open("../SuperCop/highscores2.txt");
+    scoreset.open("highscores2.txt");
     if(scoreset.is_open()){
         scoreset>>scores;
         ui->Score2_1->setText(QString::number(scores));
@@ -42,7 +42,7 @@ HighScores::HighScores(QWidget *parent) :
     }//reads current high scores
     scoreset.close();
 
-    scoreset.open("../SuperCop/highscores3.txt");
+    scoreset.open("highscores3.txt");
     if(scoreset.is_open()){
         scoreset>>scores;
         ui->Score3_1->setText(QString::number(scores));
@@ -67,26 +67,26 @@ HighScores::~HighScores()
 void HighScores::on_reset_clicked()
 {
     ofstream reset;
-    reset.open("../SuperCop/highscores1.txt");
+    reset.open("highscores1.txt");
     for(int i=0;i<5;i++){
         reset<<0<<endl;
     }
     reset.close();
 
-    reset.open("../SuperCop/highscores2.txt");
+    reset.open("highscores2.txt");
     for(int i=0;i<5;i++){
         reset<<0<<endl;
     }
     reset.close();
 
-    reset.open("../SuperCop/highscores3.txt");
+    reset.open("highscores3.txt");
     for(int i=0;i<5;i++){
         reset<<0<<endl;
     }
     reset.close();
 
     ifstream scoreset;
-    scoreset.open("../SuperCop/highscores1.txt");
+    scoreset.open("highscores1.txt");
     int scores;
     if(scoreset.is_open()){
         scoreset>>scores;
@@ -101,7 +101,7 @@ void HighScores::on_reset_clicked()
         ui->Score1_5->setText(QString::number(scores));
     }
 
-    scoreset.open("../SuperCop/highscores2.txt");
+    scoreset.open("highscores2.txt");
     if(scoreset.is_open()){
         scoreset>>scores;
         ui->Score2_1->setText(QString::number(scores));
@@ -116,7 +116,7 @@ void HighScores::on_reset_clicked()
     }//reads current high scores
     scoreset.close();
 
-    scoreset.open("../SuperCop/highscores3.txt");
+    scoreset.open("highscores3.txt");
     if(scoreset.is_open()){
         scoreset>>scores;
         ui->Score3_1->setText(QString::number(scores));

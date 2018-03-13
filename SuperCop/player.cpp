@@ -2,7 +2,6 @@
 //This file contains the coding to make the player functional.
 #include "Player.h"
 #include <QDebug>
-#include <QLabel>
 
 Player::Player(QWidget *parent)
 {
@@ -10,16 +9,11 @@ Player::Player(QWidget *parent)
     posY = parent->height() - 140;
     sizeX = 25;
     sizeY = 43;
-    image = new QPixmap("../SuperCop/Images/Running/Run0_1.png");
+    image = new QPixmap("images/Running/Run0_1.png");
     frame = 0;
     lastActionPressed = 0;
     playerDirection = 1;
     speedX = 5;
-
-    rectPosX = posX + 2;
-    rectPosY = posY; //parent->height() - 140;
-    rectSizeX = sizeX - 5;
-    rectSizeY = sizeY;
 
     leftBound = parent->width() / 5;
     rightBound = parent->width() - (parent->width() / 3);
@@ -64,17 +58,14 @@ void Player::playerScreenPos()
     if(1 == lastActionPressed && (this->posX + 25 < rightBound) && !wallCollided)
     {
         this->setPosX(this->getPosX() + speedX + 5);
-        this->setRectPosX(this->getRectPosX() + speedX + 5);
     }
     else if(4 == lastActionPressed && (this->posX > leftBound) && !wallCollided)
     {
         this->setPosX(this->getPosX() - speedX - 5);
-        this->setRectPosX(this->getRectPosX() - speedX - 5);
     }
     else
     {
         this->setPosX(this->getPosX());
-        this->setRectPosX(this->getRectPosX());
     }
 }//Controls whether the screen moves or the player does
 
@@ -109,8 +100,6 @@ void Player::playerAction(int action)
     case NONE:
         standBy();
         break;
-    case PAUSE:
-        pausePlayer();
     }
 
     this->playerScreenPos();
@@ -131,16 +120,14 @@ void Player::jump()
             switch(playerDirection)
             {
             case WEST:
-                imagePath = QString("../SuperCop/Images/Running/Run1_1.png");
+                imagePath = QString("images/Running/Run1_1.png");
                 changeImage(imagePath);
                 posY -= 30;
-                rectPosY -= 30;
                 break;
             case EAST:
-                imagePath = QString("../SuperCop/Images/Running/Run0_1.png");
+                imagePath = QString("images/Running/Run0_1.png");
                 changeImage(imagePath);
                 posY -= 30;
-                rectPosY -= 30;
                 break;
             case STAND:
                 break;
@@ -152,11 +139,11 @@ void Player::jump()
             switch(playerDirection)
             {
             case WEST:
-                imagePath = QString("../SuperCop/Images/Running/Run1_1.png");
+                imagePath = QString("images/Running/Run1_1.png");
                 changeImage(imagePath);
                 break;
             case EAST:
-                imagePath = QString("../SuperCop/Images/Running/Run0_1.png");
+                imagePath = QString("images/Running/Run0_1.png");
                 changeImage(imagePath);
                 break;
             case STAND:
@@ -166,7 +153,6 @@ void Player::jump()
     }
     else
     {
-        upPressed = false;
         standBy();
     }
 }//Controls Player Jumps
@@ -186,32 +172,20 @@ void Player::roll()
             {
             case WEST:
                 if((this->getPosX() - speedX - 3 >= leftBound) && !this->isWallCollided())
-                {
                     this->setPosX(this->getPosX() - speedX - 3);
-                    this->setRectPosX(this->getRectPosX() - speedX - 3);
-                }
                 else
-                {
                     this->setPosX(this->getPosX());
-                    this->setRectPosX(this->getRectPosX());
-                }
 
-                imagePath = QString("../SuperCop/Images/Rolling/Roll1_%1.png").arg(QString::number(frame));
+                imagePath = QString("images/Rolling/Roll1_%1.png").arg(QString::number(frame));
                 changeImage(imagePath);
                 break;
             case EAST:
                 if((this->getPosX() + speedX + 28 < rightBound) && !this->isWallCollided())
-                {
                     this->setPosX(this->getPosX() + speedX + 3);
-                    this->setRectPosX(this->getRectPosX() + speedX + 3);
-                }
                 else
-                {
                     this->setPosX(this->getPosX());
-                    this->setRectPosX(this->getRectPosX());
-                }
 
-                imagePath = QString("../SuperCop/Images/Rolling/Roll0_%1.png").arg(QString::number(frame));
+                imagePath = QString("images/Rolling/Roll0_%1.png").arg(QString::number(frame));
                 changeImage(imagePath);
                 break;
             case STAND:
@@ -224,32 +198,20 @@ void Player::roll()
             {
             case WEST:
                 if((this->getPosX() - speedX + 2 > leftBound) && !this->isWallCollided())
-                {
                     this->setPosX(this->getPosX() - speedX + 2);
-                    this->setRectPosX(this->getRectPosX() - speedX + 2);
-                }
                 else
-                {
                     this->setPosX(this->getPosX());
-                    this->setRectPosX(this->getRectPosX());
-                }
 
-                imagePath = QString("../SuperCop/Images/Rolling/Roll1_%1.png").arg(QString::number(frame));
+                imagePath = QString("images/Rolling/Roll1_%1.png").arg(QString::number(frame));
                 changeImage(imagePath);
                 break;
             case EAST:
                 if((this->getPosX() + speedX + 23 < rightBound) && !this->isWallCollided())
-                {
                     this->setPosX(this->getPosX() + speedX - 2);
-                    this->setRectPosX(this->getRectPosX() + speedX - 2);
-                }
                 else
-                {
                     this->setPosX(this->getPosX());
-                    this->setRectPosX(this->getRectPosX());
-                }
 
-                imagePath = QString("../SuperCop/Images/Rolling/Roll0_%1.png").arg(QString::number(frame));
+                imagePath = QString("images/Rolling/Roll0_%1.png").arg(QString::number(frame));
                 changeImage(imagePath);
                 break;
             case STAND:
@@ -271,15 +233,9 @@ void Player::run()
     if(this->isJumping() && (!this->isOnGround() && !this->isOnPlatform() && !this->isOnWall()))
     {
         if(posX + 26 < rightBound)
-        {
             posX += 1;
-            rectPosX += 1;
-        }
         else
-        {
             posX = posX;
-            rectPosX = rectPosX;
-        }
 
         if(!upPressed)
             frame = 5;
@@ -296,7 +252,7 @@ void Player::run()
         jumping = false;
         frame++;
         upPressed = false;
-        QString imagePath = QString("../SuperCop/Images/Running/Run0_%1.png").arg(frame);
+        QString imagePath = QString("images/Running/Run0_%1.png").arg(frame);
 
         if(0 < this->getFrame() && 4 > this->getFrame())
         {
@@ -309,7 +265,7 @@ void Player::run()
             frame = 0;
             moveRight = false;
             playerDirection = 1;
-            changeImage("../SuperCop/Images/Running/Run0_1.png");
+            changeImage("images/Running/Run0_1.png");
         }
     }
 }//Controls Player Running right
@@ -320,15 +276,9 @@ void Player::runInverted()
     if(this->isJumping() && (!this->isOnGround() && !this->isOnPlatform() && !this->isOnWall()))
     {
         if(posX - 1 > leftBound)
-        {
             posX -= 1;
-            rectPosX -= 1;
-        }
         else
-        {
             posX = posX;
-            rectPosX = rectPosX;
-        }
 
         if(!upPressed)
             frame = 5;
@@ -344,7 +294,7 @@ void Player::runInverted()
         frame++;
         jumping = false;
         upPressed = false;
-        QString imagePath = QString("../SuperCop/Images/Running/Run1_%1.png").arg(frame);
+        QString imagePath = QString("images/Running/Run1_%1.png").arg(frame);
 
         if(0 < this->getFrame() && 4 > this->getFrame())
         {
@@ -357,7 +307,7 @@ void Player::runInverted()
             frame = 0;
             moveLeft = false;
             playerDirection = -1;
-            changeImage("../SuperCop/Images/Running/Run1_1.png");
+            changeImage("images/Running/Run1_1.png");
         }
     }
 }//Controls Player Running Left
@@ -368,19 +318,13 @@ void Player::standBy()
     //Checks which direction the player was moving last then sets the appropiate standing image
     if(1 == playerDirection)
     {
-        changeImage("../SuperCop/Images/Running/Run0_1.png");
+        changeImage("images/Running/Run0_1.png");
     }
 
     if(-1 == playerDirection)
     {
-        changeImage("../SuperCop/Images/Running/Run1_1.png");
+        changeImage("images/Running/Run1_1.png");
     }
-}
-
-void Player::pausePlayer()
-{
-    QPainter paint;
-//    paint.drawText(leftBound,"PAUSED");
 }//Controls Player Stopped
 
 
@@ -411,26 +355,6 @@ int Player::getPlayerDirection()
 int Player::getGround()
 {
     return ground;
-}
-
-int Player::getRectPosX()
-{
-    return rectPosX;
-}
-
-int Player::getRectPosY()
-{
-    return rectPosY;
-}
-
-int Player::getRectSizeX()
-{
-    return rectSizeX;
-}
-
-int Player::getRectSizeY()
-{
-    return rectSizeY;
 }//Accessor
 
 
@@ -485,16 +409,6 @@ bool Player::isWallCollided()
 void Player::setSpeedX(int spd)
 {
     speedX=spd;
-}
-
-void Player::setRectPosX(int x)
-{
-    this->rectPosX = x;
-}
-
-void Player::setRectPosY(int y)
-{
-    this->rectPosY = y;
 }//Accessor
 
 void Player::setPosX(int x)

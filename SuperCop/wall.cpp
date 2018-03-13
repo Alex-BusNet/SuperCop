@@ -2,17 +2,17 @@
 //This file contains the coding to make the Wall work
 #include "wall.h"
 
-Wall::Wall(QWidget *parent)
+Wall::Wall(QWidget *parent, int xspawn)
 {
-    wall = new QPixmap("../SuperCop/Images/Wall/Box_2.png");
+    wall = new QPixmap("images/Wall/trashcan.png");
 
     gameWindow = parent->width();
     wallPosY = parent->height() - 140;
-    wallPosX = gameWindow + 50;
-
+    wallPosX = gameWindow + 50 + xspawn;
+//need to base this on these 2 plus a var for the wall location, then remove active var?
     picX = 32;
     picY = 40;
-    active = false;
+    active = true;
 }//Initializes the variables for the Wall
 
 Wall::~Wall()
@@ -22,6 +22,9 @@ Wall::~Wall()
 
 void Wall::drawWall(QPainter &painter)
 {
+    QPen pen=painter.pen();
+    pen.setStyle(Qt::NoPen);
+    painter.setPen(pen);
     rectWall = new QRect(wallPosX, wallPosY, picX, picY);
     painter.drawRect(*rectWall);
     painter.drawTiledPixmap(*rectWall, *wall);
