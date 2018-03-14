@@ -21,6 +21,7 @@ Player::Player(QWidget *parent)
 
     rolling = false;
     jumping = false;
+    jumpSequence=0;
     moveRight = false;
     moveLeft = false;
     ascend = false;
@@ -101,23 +102,25 @@ void Player::playerAction(int action)
         standBy();
         break;
     }
-
+    if(isJumping()){
+        jump();
+    }
     this->playerScreenPos();
 }//Calls the various player controlled movement functions
 
 
 void Player::jump()
 {
-    frame++;
+    jumpSequence++;
     jumping = true;
     upPressed = true;
-    if(0 < this->getFrame() && 10 > this->getFrame())
+    if(0 < jumpSequence && 10 > jumpSequence)
     {
-        QString imagePath;
-        if(0 < this->getFrame() && 5 > this->getFrame())
+        //QString imagePath;
+        if(0 < jumpSequence && 5 > jumpSequence)
         {
             ascend = true;
-            switch(playerDirection)
+           /* switch(playerDirection)
             {
             case WEST:
                 imagePath = QString("images/Running/Run1_1.png");
@@ -126,17 +129,17 @@ void Player::jump()
                 break;
             case EAST:
                 imagePath = QString("images/Running/Run0_1.png");
-                changeImage(imagePath);
+                changeImage(imagePath);*/
                 posY -= 30;
-                break;
+                /*break;
             case STAND:
                 break;
-            }
+            }*/
         }
         else
         {
             ascend = false;
-            switch(playerDirection)
+            /*switch(playerDirection)
             {
             case WEST:
                 imagePath = QString("images/Running/Run1_1.png");
@@ -148,11 +151,13 @@ void Player::jump()
                 break;
             case STAND:
                 break;
-            }
+            }*/
         }
     }
     else
     {
+        jumpSequence=0;
+        jumping=false;
         standBy();
     }
 }//Controls Player Jumps
@@ -230,26 +235,15 @@ void Player::roll()
 
 void Player::run()
 {
-    if(this->isJumping() && (!this->isOnGround() && !this->isOnPlatform() && !this->isOnWall()))
+    if(this->isJumping())
     {
         if(posX + 26 < rightBound)
             posX += 1;
-        else
-            posX = posX;
-
-        if(!upPressed)
-            frame = 5;
-        else
-        {
-            frame = frame;
-            upPressed = true;
-        }
-
-        jump();
+        //jump();
     }
     else
     {
-        jumping = false;
+        //jumping = false;
         frame++;
         upPressed = false;
         QString imagePath = QString("images/Running/Run0_%1.png").arg(frame);
@@ -273,26 +267,16 @@ void Player::run()
 
 void Player::runInverted()
 {
-    if(this->isJumping() && (!this->isOnGround() && !this->isOnPlatform() && !this->isOnWall()))
+    if(this->isJumping())
     {
         if(posX - 1 > leftBound)
             posX -= 1;
-        else
-            posX = posX;
-
-        if(!upPressed)
-            frame = 5;
-        else
-        {
-            frame = frame;
-            upPressed = true;
-        }
-        jump();
+        //jump();
     }
     else
     {
         frame++;
-        jumping = false;
+        //jumping = false;
         upPressed = false;
         QString imagePath = QString("images/Running/Run1_%1.png").arg(frame);
 

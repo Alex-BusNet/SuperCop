@@ -18,7 +18,7 @@ private:
     bool onGround, playerOnWall, playerOnPlatform, wallCollided;
     int posX, posY;
     int sizeX, sizeY;
-    int frame;
+    int frame,jumpSequence;
     int leftBound, rightBound;
     int ground, speedX;
     int lastActionPressed;

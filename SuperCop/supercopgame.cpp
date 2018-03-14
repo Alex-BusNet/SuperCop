@@ -287,8 +287,8 @@ void SuperCopGame::pollKey() //DO NOT MODIFY
     //Checks if any of the keys are pressed.
     if(isDownPressed)
         lastKeyPress = 3;
-    else if(isUpPressed)
-        lastKeyPress = 2;
+    //else if(isUpPressed)
+        //lastKeyPress = 2;
     else if(isRightPressed)
         lastKeyPress = 1;
     else if(isLeftPressed )
@@ -311,6 +311,10 @@ void SuperCopGame::pollKey() //DO NOT MODIFY
         }
         else
             lastKeyPress = 0;
+    }
+
+    if(isUpPressed){
+        player->setJumping(true);
     }
 }//Checks which key is being pressed, stops animation loops
 
@@ -394,7 +398,7 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
             (*(platforms.at(i))).drawPlatform(painter);
         }//Controls whether platform is drawn on screen
 
-        if(playerRect.intersects(platRect) && (player->getPosY() < 325) && !player->isAscending())
+        if(playerRect.intersects(platRect) && (player->getPosY() < 300) && !player->isAscending())
         {
 
             player->setPosY(283);
@@ -442,16 +446,6 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
         }//Handles game-ending collisions
     }//Handles all cases of enemy objects.
 
-//    if(playerRect.intersects(platRect) && (player->getPosY() < 300) && !player->isAscending())
-//    {
-//        std::cout<<"intersect2"<<std::endl;
-//        player->setPosY(264);
-//        player->setJumping(false);
-//        player->setOnPlatform(true);
-//        player->setOnWall(false);
-//        player->setOnGround(false);
-//    }//Platform Collision handler
-
     for(unsigned int i=0;i<walls.size();i++)
     {
         wallRect = QRect((*(walls.at(i))).getWallPosX(),(*(walls.at(i))).getWallPosY(),(*(walls.at(i))).getWallSizeX(),(*(walls.at(i))).getWallSizeY());
@@ -465,7 +459,7 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
             (*(walls.at(i))).drawWall(painter);
         }//Controls whether wall is painted
 
-        if(playerRect.intersects(wallRect) && (player->getPosY() < 340) && !player->isAscending())
+        if(playerRect.intersects(wallRect) && (player->getPosY() < 310) && !player->isAscending())
         {
             player->setPosY(290);
             player->setJumping(false);
@@ -475,7 +469,7 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
         }
     }//Wall Collison handler
 
-    if((player->getPosY() >= player->getGround()) && !player->isAscending() && !player->isOnWall() && !player->isOnPlatform())
+    if(player->getPosY() >= player->getGround())
     {
         player->setPosY(player->getGround());
         player->setJumping(false);
@@ -524,6 +518,7 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
             msg->setText("Level Beaten");
             msg->exec();
             this->setHighScores();
+            this->close();
         }
     }//Handles game winning scenario
 
