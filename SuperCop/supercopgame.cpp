@@ -61,35 +61,70 @@ SuperCopGame::SuperCopGame(QWidget *parent) :
 
     server = new QTcpServer(this);
     server->listen(QHostAddress::Any, 5300);
-    //connect(server, SIGNAL(newConnection()), this, SLOT(newConnection()));
+    connected=false;
+    connect(server, SIGNAL(newConnection()), this, SLOT(newConnection()));
 
 }//Initializes game variables
 
-/*void SuperCopGame::newConnection()
+void SuperCopGame::newConnection()
 {//Triggered each time a client connects
     while (server->hasPendingConnections()){
-        //Caps clients at 1
-        if(socket.size()<1){
-            qDebug()<<"Has pending connections";
-            //Creates a socket object and adds it to the array
-            socket = new QTcpSocket(this);
-            socket=server->nextPendingConnection();
-            //Connects the socket to read and disconnect functions
-            connect(temp, SIGNAL(readyRead()),this, SLOT(readyRead()));
-            connect(temp, SIGNAL(disconnected()),this, SLOT(Disconnected()));
-        }
+        qDebug()<<"Has pending connections";
+        //Creates a socket object and adds it to the array
+        socket = new QTcpSocket(this);
+        socket=server->nextPendingConnection();
+        //Connects the socket to read and disconnect functions
+        connect(socket, SIGNAL(readyRead()),this, SLOT(readyRead()));
+        connect(socket, SIGNAL(disconnected()),this, SLOT(Disconnected()));
     }
 }
 
 void SuperCopGame::Disconnected()
 {//When one player disconnects, the game ends
-    for(int i=0;i<socket.size();i++){
-        socket.at(i)->disconnectFromHost();
-    }
+    connected=false;
+    socket->disconnectFromHost();
     timer->stop();
-    this->resetVars();
     qDebug() <<" Disconnected";
-}*/
+}
+
+void SuperCopGame::readyRead()
+{
+    //Triggers when the client sends data
+    qDebug()<<"readyRead";
+    //Reads the data
+    QString data;
+    data = socket->readAll();
+    //qDebug()<<data<<gameStarted;
+
+    qDebug() << "Player has sent" << data ;
+    QString dataString = data;
+    if(!connected){
+        //Tell the client it connected
+        connected=true;
+        QByteArray sendConnected;
+        sendConnected.append("CONNECTED;");
+        qDebug() << socket->state();
+        if(socket->state() == QAbstractSocket::ConnectedState)
+        {
+            socket->write(sendConnected); //write the data itself
+            socket->waitForBytesWritten();
+        }
+        else
+        {
+            qDebug() <<"Connected "<< socket->errorString();
+        }
+    }
+    else{
+        if(dataString == "Jump"){
+            qDebug() << "jump";
+            isUpPressed=true;
+        }
+        else if(dataString == "EndJump"){
+            qDebug() << "End jump";
+            isUpPressed=false;
+        }
+    }
+}
 
 SuperCopGame::~SuperCopGame()
 {

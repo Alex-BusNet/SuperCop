@@ -84,12 +84,16 @@ public:
 
     QTcpServer *server;
     QTcpSocket *socket;
+    bool connected;
 
 signals:
 
 public slots:
     void pollKey();
     void updateField();
+    void newConnection();
+    void Disconnected();
+    void readyRead();
 };
 
 #endif // SUPERCOPGAME_H
