@@ -19,6 +19,8 @@
 #include <enemy.h>
 #include <donut.h>
 #include <vector>
+#include <QTcpSocket>
+#include <QTcpServer>
 using namespace std;
 
 namespace Ui {
@@ -79,6 +81,9 @@ public:
     void setHighScores();
     void setMoveSpeed(int spd);
     void pauseMenu();
+
+    QTcpServer *server;
+    QTcpSocket *socket;
 
 signals:
 

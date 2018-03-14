@@ -59,9 +59,37 @@ SuperCopGame::SuperCopGame(QWidget *parent) :
     //Initializes all Vector Elements;
     this->setVecs();
 
+    server = new QTcpServer(this);
+    server->listen(QHostAddress::Any, 5300);
+    //connect(server, SIGNAL(newConnection()), this, SLOT(newConnection()));
 
 }//Initializes game variables
 
+/*void SuperCopGame::newConnection()
+{//Triggered each time a client connects
+    while (server->hasPendingConnections()){
+        //Caps clients at 1
+        if(socket.size()<1){
+            qDebug()<<"Has pending connections";
+            //Creates a socket object and adds it to the array
+            socket = new QTcpSocket(this);
+            socket=server->nextPendingConnection();
+            //Connects the socket to read and disconnect functions
+            connect(temp, SIGNAL(readyRead()),this, SLOT(readyRead()));
+            connect(temp, SIGNAL(disconnected()),this, SLOT(Disconnected()));
+        }
+    }
+}
+
+void SuperCopGame::Disconnected()
+{//When one player disconnects, the game ends
+    for(int i=0;i<socket.size();i++){
+        socket.at(i)->disconnectFromHost();
+    }
+    timer->stop();
+    this->resetVars();
+    qDebug() <<" Disconnected";
+}*/
 
 SuperCopGame::~SuperCopGame()
 {
@@ -313,7 +341,7 @@ void SuperCopGame::pollKey() //DO NOT MODIFY
             lastKeyPress = 0;
     }
 
-    if(isUpPressed){
+    if(isUpPressed && (player->isOnGround() || player->isOnPlatform() || player->isOnWall())){
         player->setJumping(true);
     }
 }//Checks which key is being pressed, stops animation loops
