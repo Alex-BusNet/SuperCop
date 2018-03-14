@@ -22,9 +22,9 @@ Wall::~Wall()
 
 void Wall::drawWall(QPainter &painter)
 {
-    QPen pen=painter.pen();
-    pen.setStyle(Qt::NoPen);
-    painter.setPen(pen);
+//    QPen pen=painter.pen();
+//    pen.setStyle(Qt::NoPen);
+//    painter.setPen(pen);
     rectWall = new QRect(wallPosX, wallPosY, picX, picY);
     painter.drawRect(*rectWall);
     painter.drawTiledPixmap(*rectWall, *wall);

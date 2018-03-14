@@ -402,6 +402,24 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
     QRect enemyRect, playerRect, donutRect, levelEndRect, platRect, wallRect;
     playerRect = QRect(player->getPosX(),player->getPosY(),player->getSizeX(),player->getSizeY());
 
+
+    if(player->getPosY() >= player->getGround())
+    {
+        player->setPosY(player->getGround());
+        player->setJumping(false);
+        player->setOnPlatform(false);
+        player->setOnWall(false);
+        player->setOnGround(true);
+    }//Ground Collision handler
+    else
+    {
+        player->setPosY(player->getPosY() + 10);
+        //        player->setJumping(true);
+        player->setOnPlatform(false);
+        player->setOnWall(false);
+        player->setOnGround(false);
+    }//Lowers Player until collision occurs
+
     for(unsigned int i = 0; i < donuts.size(); i++)
     {
         donutRect = QRect((*(donuts.at(i))).getPosX(),(*(donuts.at(i))).getPosY(),(*(donuts.at(i))).getSizeX(),(*(donuts.at(i))).getSizeY());
@@ -431,21 +449,21 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
         }//Donuts don't spawn in walls - replace with level design
     }//Handles all cases of donut objects.
 
-    for(unsigned int i = 0; i < walls.size(); i++)
-    {
-        wallRect = QRect((*(walls.at(i))).getWallPosX(), (*(walls.at(i))).getWallPosY(), (*(walls.at(i))).getWallSizeX(), (*(walls.at(i))).getWallSizeY());
+//    for(unsigned int i = 0; i < walls.size(); i++)
+//    {
+//        wallRect = QRect((*(walls.at(i))).getWallPosX(), (*(walls.at(i))).getWallPosY(), (*(walls.at(i))).getWallSizeX(), (*(walls.at(i))).getWallSizeY());
 
-        if(wallSpawn.at(i) <= location)
-        {
-            (*(walls.at(i))).setActive(true);
-        }//Spawns a wall at each read location
+//        if(wallSpawn.at(i) <= location)
+//        {
+//            (*(walls.at(i))).setActive(true);
+//        }//Spawns a wall at each read location
 
-        if((*walls.at(i)).isActive())
-        {
-            (*(walls.at(i))).drawWall(painter);
-        }//Controls whether wall is drawn on screen
+//        if((*walls.at(i)).isActive())
+//        {
+//            (*(walls.at(i))).drawWall(painter);
+//        }//Controls whether wall is drawn on screen
 
-    }//Handles all wall objects
+//    }//Handles all wall objects
 
     for(unsigned int i = 0; i < platforms.size(); i++)
     {
@@ -464,7 +482,7 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
         if(playerRect.intersects(platRect) && (player->getPosY() < 300) && !player->isAscending())
         {
 
-            player->setPosY(283);
+            player->setPosY(285);
             player->setJumping(false);
             player->setOnPlatform(true);
             player->setOnWall(false);
@@ -522,9 +540,10 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
             (*(walls.at(i))).drawWall(painter);
         }//Controls whether wall is painted
 
-        if(playerRect.intersects(wallRect) && (player->getPosY() < 310) && !player->isAscending())
+        if(playerRect.intersects(wallRect) && (player->getPosY() < 325) && !player->isAscending())
         {
-            player->setPosY(290);
+            qDebug()<<"on top "<<player->getPosY();
+            player->setPosY(310);
             player->setJumping(false);
             player->setOnPlatform(false);
             player->setOnWall(true);
@@ -532,34 +551,20 @@ void SuperCopGame::paintEvent(QPaintEvent *e)
         }
     }//Wall Collison handler
 
-    if(player->getPosY() >= player->getGround())
-    {
-        player->setPosY(player->getGround());
-        player->setJumping(false);
-        player->setOnPlatform(false);
-        player->setOnWall(false);
-        player->setOnGround(true);
-    }//Ground Collision handler
-    else
-    {
-        player->setPosY(player->getPosY() + 10);
-        //        player->setJumping(true);
-        player->setOnPlatform(false);
-        player->setOnWall(false);
-        player->setOnGround(false);
-    }//Lowers Player until collision occurs
 
     for(unsigned int i=0;i<walls.size();i++)
     {
         wallRect = QRect((*(walls.at(i))).getWallPosX(),(*(walls.at(i))).getWallPosY(),(*(walls.at(i))).getWallSizeX(),(*(walls.at(i))).getWallSizeY());
 
-        if((player->getPosY() + 40 > (*(walls.at(i))).getWallPosY()) && (playerRect.intersects(wallRect)) && (1 == player->getPlayerDirection()))
+        if((player->getPosY() + 30 > (*(walls.at(i))).getWallPosY()) && (playerRect.intersects(wallRect)) && (1 == player->getPlayerDirection()))
         {
+            qDebug()<<"collide "<<player->getPosY();
             player->setPosX((*(walls.at(i))).getWallPosX() - player->getSizeX() );
             player->setWallCollided(true);
         }//Checks for player colliding with the left side of a wall
-        else if((player->getPosY() + 40 > (*(walls.at(i))).getWallPosY()) && (playerRect.intersects(wallRect)) && (-1 == player->getPlayerDirection()))
+        else if((player->getPosY() + 30 > (*(walls.at(i))).getWallPosY()) && (playerRect.intersects(wallRect)) && (-1 == player->getPlayerDirection()))
         {
+            qDebug()<<"collide "<<player->getPosY();
             player->setPosX((*(walls.at(i))).getWallPosX()+(*(walls.at(i))).getWallSizeX());
             player->setWallCollided(true);
         }//Checks for player colliding with the left side of a wall
